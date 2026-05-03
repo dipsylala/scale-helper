@@ -88,23 +88,43 @@ note names.
 
 1. The control bar contains exactly five controls in order: **Tuning**, **Scale**,
    **Root**, **Frets**, and **Labels**.
-2. The **Tuning** dropdown offers the following options (display name → open
-   strings low-to-high):
+2. The **Tuning** dropdown offers the following options, grouped by category
+   (display name → open strings low-to-high):
+
+   *Standard & variants*
    - Standard → E A D G B E
-   - Drop D → D A D G B E
-   - Open G → D G D G B D
-   - Open E → E B E G# B E
-   - DADGAD → D A D G A D
    - Half-step Down → Eb Ab Db Gb Bb Eb
-3. The **Scale** dropdown offers at minimum: Major (Ionian), Dorian, Phrygian,
-   Lydian, Mixolydian, Natural Minor (Aeolian), Locrian, Harmonic Minor, Melodic
-   Minor, Pentatonic Major, Pentatonic Minor, Blues.
+   - Full Step Down / D Standard → D G C F A D
+   - C Standard → C F Bb Eb G C
+
+   *Drop tunings*
+   - Drop D → D A D G B E
+   - Double Drop D → D A D G B D
+   - Drop C → C G C F A D
+
+   *Open tunings*
+   - Open G → D G D G B D
+   - Open D → D A D F# A D
+   - Open E → E B E G# B E
+   - Open A → E A E A C# E
+   - Open C → C G C G C E
+
+   *Modal / other*
+   - DADGAD → D A D G A D
+
+3. The **Scale** dropdown offers the following scales, in order (common first,
+   then exotic/shred):
+   Pentatonic Minor, Pentatonic Major, Blues, Natural Minor (Aeolian),
+   Major (Ionian), Harmonic Minor, Dorian, Mixolydian, Melodic Minor,
+   Phrygian, Lydian, Locrian, Phrygian Dominant, Lydian Dominant,
+   Whole Tone, Diminished (Half-Whole), Diminished (Whole-Half),
+   Double Harmonic Major, Hungarian Minor, Super Locrian (Altered), Enigmatic.
 4. The **Root** dropdown offers all 12 chromatic pitches using sharps for
    accidentals: C, C#, D, D#, E, F, F#, G, G#, A, A#, B.
 5. The **Frets** input defaults to 21; the user can change it; values outside the
    range 12–24 are clamped or rejected.
 6. The **Labels** toggle has three states: Dots, Note Names, Scale Degrees.
-7. All controls default to: Standard tuning, Major scale, root C, 21 frets, Dots
+7. All controls default to: Standard tuning, Pentatonic Minor scale, root C, 21 frets, Dots
    labels.
 8. The neck diagram is drawn horizontally; string 1 (highest pitch) is at the top,
    string 6 (lowest pitch) is at the bottom.
@@ -112,7 +132,7 @@ note names.
 10. Fret numbers are shown above each fret column (1, 2, 3 … N).
 11. String names are shown to the left of the open-string column.
 12. Standard fretboard position markers appear below the neck at frets 3, 5, 7, 9,
-    15, 17, 19 (single dot) and 12, 21 (double dot), subject to the fret count.
+    15, 17, 19, 21 (single dot) and 12, 24 (double dot), subject to the fret count.
 13. For E Major (root E, Major scale, Standard tuning), fret 0 string 6 is
     highlighted as the root and fret 0 string 1 is highlighted as the root.
 14. For E Major, exactly the notes E, F#, G#, A, B, C#, D# are highlighted across
@@ -146,18 +166,27 @@ note names.
 
 | Scale | Intervals |
 |---|---|
+| Pentatonic Minor | 0 3 5 7 10 |
+| Pentatonic Major | 0 2 4 7 9 |
+| Blues | 0 3 5 6 7 10 |
+| Natural Minor (Aeolian) | 0 2 3 5 7 8 10 |
 | Major (Ionian) | 0 2 4 5 7 9 11 |
+| Harmonic Minor | 0 2 3 5 7 8 11 |
 | Dorian | 0 2 3 5 7 9 10 |
+| Mixolydian | 0 2 4 5 7 9 10 |
+| Melodic Minor | 0 2 3 5 7 9 11 |
 | Phrygian | 0 1 3 5 7 8 10 |
 | Lydian | 0 2 4 6 7 9 11 |
-| Mixolydian | 0 2 4 5 7 9 10 |
-| Natural Minor (Aeolian) | 0 2 3 5 7 8 10 |
 | Locrian | 0 1 3 5 6 8 10 |
-| Harmonic Minor | 0 2 3 5 7 8 11 |
-| Melodic Minor | 0 2 3 5 7 9 11 |
-| Pentatonic Major | 0 2 4 7 9 |
-| Pentatonic Minor | 0 3 5 7 10 |
-| Blues | 0 3 5 6 7 10 |
+| Phrygian Dominant | 0 1 4 5 7 8 10 |
+| Lydian Dominant | 0 2 4 6 7 9 10 |
+| Whole Tone | 0 2 4 6 8 10 |
+| Diminished (Half-Whole) | 0 1 3 4 6 7 9 10 |
+| Diminished (Whole-Half) | 0 2 3 5 6 8 9 11 |
+| Double Harmonic Major | 0 1 4 5 7 8 11 |
+| Hungarian Minor | 0 2 3 6 7 8 11 |
+| Super Locrian (Altered) | 0 1 3 4 6 8 10 |
+| Enigmatic | 0 1 4 6 8 10 11 |
 
 #### `tunings.ts` — Tuning Registry (deep module)
 - Defines each tuning as `{ name: string; strings: number[] }` where `strings` is
@@ -167,16 +196,23 @@ note names.
   number` helper (simply `openMidi + fret`).
 - Purely functional; fully unit-testable.
 
-**MIDI values for open strings (low E = 40 in standard):**
+**MIDI values for open strings (middle C = 60, low E standard = 40):**
 
 | Tuning | String 6→1 MIDI |
 |---|---|
 | Standard | 40 45 50 55 59 64 |
-| Drop D | 38 45 50 55 59 64 |
-| Open G | 38 43 50 55 59 62 |
-| Open E | 40 47 52 56 59 64 |
-| DADGAD | 38 45 50 55 57 62 |
 | Half-step Down | 39 44 49 54 58 63 |
+| Full Step Down / D Standard | 38 43 48 53 57 62 |
+| C Standard | 36 41 46 51 55 60 |
+| Drop D | 38 45 50 55 59 64 |
+| Double Drop D | 38 45 50 55 59 62 |
+| Drop C | 36 43 48 53 57 62 |
+| Open G | 38 43 50 55 59 62 |
+| Open D | 38 45 50 54 57 62 |
+| Open E | 40 47 52 56 59 64 |
+| Open A | 40 45 52 57 61 64 |
+| Open C | 36 43 48 55 60 64 |
+| DADGAD | 38 45 50 55 57 62 |
 
 #### `fretboard.ts` — Fretboard Model (deep module)
 - Accepts a tuning, a scale, a root pitch-class (0–11), and a fret count.
@@ -191,13 +227,18 @@ note names.
 - Purely functional; fully unit-testable.
 
 #### `renderer.ts` — SVG Neck Renderer
-- Accepts the 2D `Cell[][]` grid, a `LabelMode` enum (`DOTS | NOTE_NAMES |
-  DEGREES`), and the fret count.
-- Produces and mounts an SVG element into a given container DOM node.
-- Responsible for: nut line, fret lines, string lines, position markers, fret
-  number labels, string name labels, open-string column, scale-note dots.
-- Colours: root dots use a distinct accent colour (e.g. amber/gold); other scale
-  dots use the primary colour (e.g. teal/blue); non-scale positions are empty.
+- Accepts the 2D `Cell[][]` grid, a `LabelMode` string union (`"dots" |
+  "noteNames" | "degrees"`), the fret count, and a `Palette` object.
+- The `Palette` is passed explicitly by `main.ts` (not read from the DOM inside
+  the renderer), keeping `renderNeck` a pure function of its arguments.
+- Exports `getPalette(theme: "dark" | "light"): Palette` so callers can obtain
+  the correct palette before passing it in.
+- Two built-in palettes: `DARK_PALETTE` (default) and `LIGHT_PALETTE`.
+- Responsible for: neck background rect, nut, fret lines, string lines, position
+  markers, fret number labels, string name labels, open-string column, scale-note
+  dots.
+- Root dots are rendered as rotated diamonds (amber); other scale dots are circles
+  (blue); non-scale positions are empty.
 - Re-renders by replacing the SVG element.
 
 #### `controls.ts` — Control Bar
@@ -206,10 +247,23 @@ note names.
   control changes.
 - Encapsulates all DOM event handling.
 
+#### `persistence.ts` — State & Theme Persistence
+- Saves and restores `AppState` and the active theme via `localStorage`.
+- State is serialised by **name** (not array index), so it is robust to
+  scale/tuning reordering.
+- Validates all fields on load; falls back to `DEFAULT_STATE` for any missing or
+  out-of-range value.
+- Exports: `saveState`, `loadState`, `saveTheme`, `loadTheme`.
+- Theme type is `"dark" | "light"` throughout — no raw strings.
+
 #### `main.ts` — Application Entry Point
-- Instantiates controls and renderer.
-- Holds application state (`AppState`).
-- On any control change: recomputes the fretboard model, re-renders the neck.
+- Instantiates controls, renderer, and persistence.
+- Holds application state (`AppState`) and current theme (`"dark" | "light"`).
+- Restores state and theme from `localStorage` on boot.
+- On any control change: saves state, recomputes the fretboard model, re-renders
+  the neck with the current palette.
+- Owns the dark/light mode toggle button and updates the `data-theme` attribute
+  on `<html>` so CSS variables switch instantly.
 
 ### Architectural Decisions
 
@@ -266,7 +320,10 @@ implementation. They do not import private helpers or test intermediate state.
 - Audio / playback of scale notes
 - Mobile-first / responsive layout (the diagram may overflow on small screens)
 - Flat accidental display
-- Dark mode toggle
+
+> **Implemented beyond original scope:** dark/light mode toggle (🌙/☀️ button in
+> the header); selection and theme persistence via `localStorage`; 9 exotic/shred
+> scales; 7 additional tunings.
 
 ---
 
@@ -274,9 +331,11 @@ implementation. They do not import private helpers or test intermediate state.
 
 - The spec table of MIDI values and interval arrays is the normative reference for
   testing. Implementations must match these values exactly.
-- Fret position marker placement follows standard Fender/Gibson convention. Fret 21
-  gets the double-dot (same as fret 12 shifted by one octave). Markers only render
-  if the selected fret count is ≥ that fret number.
+- Fret position marker placement follows standard Fender/Gibson convention.
+  Single dots at 3, 5, 7, 9, 15, 17, 19, 21; double dots at 12 and 24.
+  Fret 21 has a single dot (the pattern repeats the first octave: 3→15, 5→17,
+  7→19, 9→21; the double dot repeats at 24, not 21). Markers only render if the
+  selected fret count is ≥ that fret number.
 - The degree label for an interval should follow common theory notation:
   unaltered degrees are plain numbers ("1", "2", "3"…); flattened degrees use a
   "b" prefix ("b3", "b7"); raised degrees use "#" ("4#" → Lydian raised fourth).
