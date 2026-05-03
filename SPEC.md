@@ -65,21 +65,28 @@ note names.
 14. As a learner, I want non-scale notes to be invisible (no dot, no label), so
     that the diagram is uncluttered.
 
+### Appearance
+
+15. As a learner, I want a dark/light mode toggle in the header, so that I can
+    use the app comfortably in different lighting conditions.
+16. As a learner, I want my chosen theme to be remembered across sessions, so that
+    I do not have to switch it every time I open the app.
+
 ### Label Modes
 
-15. As a learner in **dots only** mode, I want scale-note circles to contain no
+17. As a learner in **dots only** mode, I want scale-note circles to contain no
     text, so that I can focus purely on patterns and shapes.
-16. As a learner in **note names** mode, I want each scale-note circle to display
+18. As a learner in **note names** mode, I want each scale-note circle to display
     the note's letter name (e.g. "A", "C#"), so that I can learn the names of the
     notes on the neck.
-17. As a learner in **scale degrees** mode, I want each scale-note circle to
+19. As a learner in **scale degrees** mode, I want each scale-note circle to
     display the degree number (1–7 for diatonic scales; 1, 2, 3, 5, 6 for
     pentatonic major; etc.), so that I can understand the function of each note
     within the scale.
 
 ### Reactivity
 
-18. As a learner, I want the neck to re-render immediately whenever I change any
+20. As a learner, I want the neck to re-render immediately whenever I change any
     control, without a page reload, so that I can explore different options quickly.
 
 ---
@@ -126,6 +133,12 @@ note names.
 6. The **Labels** toggle has three states: Dots, Note Names, Scale Degrees.
 7. All controls default to: Standard tuning, Pentatonic Minor scale, root C, 21 frets, Dots
    labels.
+18. A **theme toggle** button (🌙/☀️) is present in the header; clicking it
+    switches between dark and light themes.
+19. The selected theme is persisted in `localStorage` and restored on next load;
+    the default theme is dark.
+20. All UI colours (background, text, controls, neck) update immediately when the
+    theme changes, via CSS custom properties on `<html data-theme>`.
 8. The neck diagram is drawn horizontally; string 1 (highest pitch) is at the top,
    string 6 (lowest pitch) is at the bottom.
 9. Open strings (fret 0) are displayed as a column to the left of the nut line.
@@ -320,10 +333,6 @@ implementation. They do not import private helpers or test intermediate state.
 - Audio / playback of scale notes
 - Mobile-first / responsive layout (the diagram may overflow on small screens)
 - Flat accidental display
-
-> **Implemented beyond original scope:** dark/light mode toggle (🌙/☀️ button in
-> the header); selection and theme persistence via `localStorage`; 9 exotic/shred
-> scales; 7 additional tunings.
 
 ---
 
