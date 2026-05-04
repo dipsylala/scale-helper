@@ -12,6 +12,19 @@
   --text:          #e0e0e0;
   --text-muted:    #aaaaaa;
   --accent:        #e67e22;
+
+  /* Neck / fretboard */
+  --neck-root:         #e67e22;
+  --neck-scale:        #2980b9;
+  --neck-dot-text:     #ffffff;
+  --neck-string:       #8a8a8a;
+  --neck-fret:         #555555;
+  --neck-nut:          #cccccc;
+  --neck-bg:           #2a1f14;
+  --neck-edge:         #3d2b18;
+  --neck-marker:       #c0c0c0;
+  --neck-fret-num:     #aaaaaa;
+  --neck-string-label: #cccccc;
 }
 
 [data-theme="light"] {
@@ -24,6 +37,19 @@
   --text:          #1a1a1a;
   --text-muted:    #555555;
   --accent:        #c0550a;
+
+  /* Neck / fretboard */
+  --neck-root:         #c0550a;
+  --neck-scale:        #1a6ea8;
+  --neck-dot-text:     #ffffff;
+  --neck-string:       #666666;
+  --neck-fret:         #9e8a76;
+  --neck-nut:          #3a2e24;
+  --neck-bg:           #c8a96e;
+  --neck-edge:         #a07840;
+  --neck-marker:       #1a1a1a;
+  --neck-fret-num:     #555555;
+  --neck-string-label: #333333;
 }
 
 html, body {

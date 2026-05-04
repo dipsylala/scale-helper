@@ -37,52 +37,22 @@ const POSITION_MARKERS: Record<number, "single" | "double"> = {
   24: "double",
 };
 
-// ── Colour palettes ───────────────────────────────────────────────────────────
-interface Palette {
-  root: string;
-  scale: string;
-  text: string;
-  string: string;
-  fret: string;
-  nut: string;
-  neckBg: string;
-  neckEdge: string;
-  marker: string;
-  fretNum: string;
-  stringLabel: string;
-}
-
-const DARK_PALETTE: Palette = {
-  root:        "#e67e22",
-  scale:       "#2980b9",
-  text:        "#ffffff",
-  string:      "#8a8a8a",
-  fret:        "#555555",
-  nut:         "#cccccc",
-  neckBg:      "#2a1f14",
-  neckEdge:    "#3d2b18",
-  marker:      "#c0c0c0",
-  fretNum:     "#aaaaaa",
-  stringLabel: "#cccccc",
-};
-
-const LIGHT_PALETTE: Palette = {
-  root:        "#c0550a",
-  scale:       "#1a6ea8",
-  text:        "#ffffff",
-  string:      "#666666",
-  fret:        "#9e8a76",
-  nut:         "#3a2e24",
-  neckBg:      "#c8a96e",
-  neckEdge:    "#a07840",
-  marker:      "#1a1a1a",
-  fretNum:     "#555555",
-  stringLabel: "#333333",
-};
-
-export function getPalette(theme: "dark" | "light"): Palette {
-  return theme === "light" ? LIGHT_PALETTE : DARK_PALETTE;
-}
+// ── Colour helpers ────────────────────────────────────────────────────────────
+// All neck colours are CSS custom properties so the SVG inherits the active
+// theme automatically. No palette object or re-render needed on theme change.
+const C = {
+  root:        "var(--neck-root)",
+  scale:       "var(--neck-scale)",
+  text:        "var(--neck-dot-text)",
+  string:      "var(--neck-string)",
+  fret:        "var(--neck-fret)",
+  nut:         "var(--neck-nut)",
+  neckBg:      "var(--neck-bg)",
+  neckEdge:    "var(--neck-edge)",
+  marker:      "var(--neck-marker)",
+  fretNum:     "var(--neck-fret-num)",
+  stringLabel: "var(--neck-string-label)",
+} as const;
 
 function svgEl<K extends keyof SVGElementTagNameMap>(tag: K): SVGElementTagNameMap[K] {
   return document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -100,11 +70,9 @@ export function renderNeck(
   grid: Cell[][],
   labelMode: LabelMode,
   fretCount: number,
-  palette: Palette,
   leftHanded = false,
 ): void {
   const numStrings = grid.length;
-  const C = palette;
 
   const totalWidth  = PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + fretCount * FRET_WIDTH + NECK_EXTRA_RIGHT;
   const totalHeight = PADDING_TOP + (numStrings - 1) * STRING_SPACING + PADDING_BOTTOM;
@@ -272,10 +240,13 @@ export function renderNeck(
         noteGroup.appendChild(circle);
       }
 
-      // Label text — open strings: string name drawn by label loop below.
-      // Fretted notes: follow labelMode.
+      // Label text — follows labelMode for all frets.
+      // Open strings in "dots" mode show the note name so the string is
+      // identifiable (fretted dots are unlabelled in that mode).
       let label = "";
-      if (f > 0) {
+      if (f === 0) {
+        label = labelMode === "degrees" ? cell.degreeLabel : cell.noteName;
+      } else {
         if (labelMode === "noteNames") label = cell.noteName;
         else if (labelMode === "degrees") label = cell.degreeLabel;
       }
@@ -300,31 +271,24 @@ export function renderNeck(
     }
   }
 
-  // ── String name labels (at open-string column, inside shape when in scale) ─
-  // Drawn after dots so text sits on top of hollow shapes.
-  // For in-scale open strings the noteGroup below handles the click;
-  // for out-of-scale open strings we add a transparent hit circle here.
+  // ── String name labels (out-of-scale open strings only) ──────────────────
+  // In-scale open strings are labelled inside their noteGroup above.
   for (let s = 0; s < numStrings; s++) {
     const cell = grid[s][0];
-    const color = cell.inScale
-      ? (cell.isRoot ? C.root : C.scale)
-      : C.stringLabel;
+    if (cell.inScale) continue;
     const t = svgEl("text");
     attr(t, {
       x: mx(fretX(0)),
       y: stringY(s) + TEXT_V_OFFSET,
       "text-anchor": "middle",
       "font-size": FONT_SIZE_STRING,
-      fill: color,
+      fill: C.stringLabel,
       "font-family": "sans-serif",
-      "font-weight": cell.inScale ? "bold" : "normal",
+      "font-weight": "normal",
       "pointer-events": "none",
     });
     t.textContent = NOTE_NAMES[cell.midi % 12];
-
-    if (cell.inScale) {
-      svg.appendChild(t);
-    }
+    svg.appendChild(t);
   }
 
   // Replace any existing SVG

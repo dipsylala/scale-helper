@@ -6,12 +6,17 @@
 // ---------------------------------------------------------------------------
 
 import { AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
-import { SCALES } from "./scales";
+import { SCALES, Scale } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
 import { AppState, LabelMode } from "./state";
 
 export type { AppState } from "./state";
 export { DEFAULT_STATE } from "./state";
+
+// ── Per-category scale memory ─────────────────────────────────────────────────
+// Persists between remounts within the page lifetime. Lets the filter toggle
+// remember which scale was last active in each category.
+const _lastScale: Partial<Record<"common" | "exotic", Scale>> = {};
 
 // ── Top bar: settings that don't change often ─────────────────────────────────
 export function mountSettings(
@@ -57,7 +62,7 @@ export function mountSettings(
       { value: "degrees",   text: "Degrees" },
     ],
     state.labelMode,
-    (v) => onChange({ ...state, labelMode: v as LabelMode }),
+    (v) => onChange({ ...state, labelMode: v }),
   ));
 
   // ── Handed ────────────────────────────────────────────────────────────────
@@ -68,7 +73,7 @@ export function mountSettings(
       { value: "left",  text: "Left"  },
     ],
     state.handedness,
-    (v) => onChange({ ...state, handedness: v as "right" | "left" }),
+    (v) => onChange({ ...state, handedness: v }),
   ));
 }
 
@@ -103,8 +108,7 @@ export function mountSelectors(
   // ── Scale (grid + Common/Exotic filter) ───────────────────────────────────
   const isExotic = state.scale.category === "exotic";
   const visibleScales = SCALES.filter((s) => s.category === (isExotic ? "exotic" : "common"));
-  const defaultExotic = SCALES.find((s) => s.category === "exotic")!;
-  const defaultCommon = SCALES.find((s) => s.category === "common")!;
+  _lastScale[state.scale.category] = state.scale;
 
   const scaleSection = document.createElement("fieldset");
   scaleSection.className = "selector-group scale-section";
@@ -126,7 +130,10 @@ export function mountSelectors(
   const filterToggle = makeToggleGroup(
     [{ value: "common", text: "Common" }, { value: "exotic", text: "Exotic" }],
     isExotic ? "exotic" : "common",
-    (v) => onChange({ ...state, scale: v === "exotic" ? defaultExotic : defaultCommon }),
+    (v) => {
+      const fallback = SCALES.find((s) => s.category === v)!;
+      onChange({ ...state, scale: _lastScale[v] ?? fallback });
+    },
   );
   filterToggle.classList.add("scale-filter");
   scaleSection.appendChild(filterToggle);
@@ -153,10 +160,10 @@ function makeLabel(text: string): HTMLSpanElement {
   return el;
 }
 
-function makeToggleGroup(
-  options: { value: string; text: string }[],
-  activeValue: string,
-  onSelect: (value: string) => void,
+function makeToggleGroup<T extends string>(
+  options: { value: T; text: string }[],
+  activeValue: T,
+  onSelect: (value: T) => void,
 ): HTMLElement {
   const group = document.createElement("div");
   group.className = "label-toggle";
