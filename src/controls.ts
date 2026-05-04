@@ -8,15 +8,12 @@
 import { AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
 import { SCALES, Scale } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
-import { AppState, LabelMode } from "./state";
+import { AppState } from "./state";
 
-export type { AppState } from "./state";
-export { DEFAULT_STATE } from "./state";
-
-// ── Per-category scale memory ─────────────────────────────────────────────────
-// Persists between remounts within the page lifetime. Lets the filter toggle
-// remember which scale was last active in each category.
-const _lastScale: Partial<Record<"common" | "exotic", Scale>> = {};
+export interface ScaleMemory {
+  remember(scale: Scale): void;
+  recall(category: "common" | "exotic"): Scale | undefined;
+}
 
 // ── Top bar: settings that don't change often ─────────────────────────────────
 export function mountSettings(
@@ -29,14 +26,17 @@ export function mountSettings(
   // ── Strings (segmented toggle) ───────────────────────────────────────────────────
   const currentStringCount = state.tuning.strings.length;
   container.appendChild(makeLabel("Strings"));
-  container.appendChild(makeToggleGroup(
-    AVAILABLE_STRING_COUNTS.map((n) => ({ value: String(n), text: String(n) })),
-    String(currentStringCount),
-    (v) => {
-      const newTuning = getTuningsForStringCount(Number(v))[0];
-      onChange({ ...state, tuning: newTuning });
-    },
-  ));
+  container.appendChild(
+    makeToggleGroup(
+      AVAILABLE_STRING_COUNTS.map((n) => ({ value: String(n), text: String(n) })),
+      String(currentStringCount),
+      (v) => {
+        const newTuning = getTuningsForStringCount(Number(v))[0];
+        onChange({ ...state, tuning: newTuning });
+      },
+      "Number of strings",
+    ),
+  );
 
   // ── Frets ─────────────────────────────────────────────────────────────────
   container.appendChild(makeLabel("Frets"));
@@ -46,6 +46,7 @@ export function mountSettings(
   fretInput.max = "24";
   fretInput.value = String(state.fretCount);
   fretInput.className = "fret-input";
+  fretInput.setAttribute("aria-label", "Number of frets to display");
   fretInput.addEventListener("change", () => {
     const v = Math.min(24, Math.max(12, Number(fretInput.value) || 21));
     fretInput.value = String(v);
@@ -55,26 +56,32 @@ export function mountSettings(
 
   // ── Labels ────────────────────────────────────────────────────────────────
   container.appendChild(makeLabel("Labels"));
-  container.appendChild(makeToggleGroup(
-    [
-      { value: "dots",      text: "Dots" },
-      { value: "noteNames", text: "Note Names" },
-      { value: "degrees",   text: "Degrees" },
-    ],
-    state.labelMode,
-    (v) => onChange({ ...state, labelMode: v }),
-  ));
+  container.appendChild(
+    makeToggleGroup(
+      [
+        { value: "dots", text: "Dots" },
+        { value: "noteNames", text: "Note Names" },
+        { value: "degrees", text: "Degrees" },
+      ],
+      state.labelMode,
+      (v) => onChange({ ...state, labelMode: v }),
+      "Note label style",
+    ),
+  );
 
   // ── Handed ────────────────────────────────────────────────────────────────
   container.appendChild(makeLabel("Handed"));
-  container.appendChild(makeToggleGroup(
-    [
-      { value: "right", text: "Right" },
-      { value: "left",  text: "Left"  },
-    ],
-    state.handedness,
-    (v) => onChange({ ...state, handedness: v }),
-  ));
+  container.appendChild(
+    makeToggleGroup(
+      [
+        { value: "right", text: "Right" },
+        { value: "left", text: "Left" },
+      ],
+      state.handedness,
+      (v) => onChange({ ...state, handedness: v }),
+      "Guitar handedness",
+    ),
+  );
 }
 
 // ── Below fretboard: scale, root, tuning ─────────────────────────────────────
@@ -82,6 +89,7 @@ export function mountSelectors(
   container: HTMLElement,
   state: AppState,
   onChange: (s: AppState) => void,
+  scaleMemory: ScaleMemory,
 ): void {
   container.innerHTML = "";
 
@@ -96,9 +104,15 @@ export function mountSelectors(
   for (const name of NOTE_NAMES) {
     const btn = document.createElement("button");
     btn.textContent = name;
-    if (NOTE_NAMES[state.root] === name) btn.classList.add("active");
+    btn.setAttribute("aria-label", `Root note ${name}`);
+    if (NOTE_NAMES[state.root] === name) {
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    } else {
+      btn.setAttribute("aria-pressed", "false");
+    }
     btn.addEventListener("click", () =>
-      onChange({ ...state, root: NOTE_NAMES.indexOf(name as typeof NOTE_NAMES[number]) }),
+      onChange({ ...state, root: NOTE_NAMES.indexOf(name as (typeof NOTE_NAMES)[number]) }),
     );
     rootRow.appendChild(btn);
   }
@@ -108,7 +122,7 @@ export function mountSelectors(
   // ── Scale (grid + Common/Exotic filter) ───────────────────────────────────
   const isExotic = state.scale.category === "exotic";
   const visibleScales = SCALES.filter((s) => s.category === (isExotic ? "exotic" : "common"));
-  _lastScale[state.scale.category] = state.scale;
+  scaleMemory.remember(state.scale);
 
   const scaleSection = document.createElement("fieldset");
   scaleSection.className = "selector-group scale-section";
@@ -121,19 +135,29 @@ export function mountSelectors(
   for (const s of visibleScales) {
     const btn = document.createElement("button");
     btn.textContent = s.name;
-    if (state.scale.name === s.name) btn.classList.add("active");
+    btn.setAttribute("aria-label", `${s.name} scale`);
+    if (state.scale.name === s.name) {
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    } else {
+      btn.setAttribute("aria-pressed", "false");
+    }
     btn.addEventListener("click", () => onChange({ ...state, scale: s }));
     scaleGrid.appendChild(btn);
   }
   scaleSection.appendChild(scaleGrid);
 
   const filterToggle = makeToggleGroup(
-    [{ value: "common", text: "Common" }, { value: "exotic", text: "Exotic" }],
+    [
+      { value: "common", text: "Common" },
+      { value: "exotic", text: "Exotic" },
+    ],
     isExotic ? "exotic" : "common",
     (v) => {
       const fallback = SCALES.find((s) => s.category === v)!;
-      onChange({ ...state, scale: _lastScale[v] ?? fallback });
+      onChange({ ...state, scale: scaleMemory.recall(v) ?? fallback });
     },
+    "Scale category filter",
   );
   filterToggle.classList.add("scale-filter");
   scaleSection.appendChild(filterToggle);
@@ -141,15 +165,17 @@ export function mountSelectors(
 
   // ── Tuning ────────────────────────────────────────────────────────────────
   const filteredTunings = getTuningsForStringCount(state.tuning.strings.length);
-  container.appendChild(makeButtonGroup(
-    filteredTunings.map((t) => t.name),
-    state.tuning.name,
-    (name) => {
-      const t = filteredTunings.find((tu) => tu.name === name)!;
-      onChange({ ...state, tuning: t });
-    },
-    "Tuning",
-  ));
+  container.appendChild(
+    makeButtonGroup(
+      filteredTunings.map((t) => t.name),
+      state.tuning.name,
+      (name) => {
+        const t = filteredTunings.find((tu) => tu.name === name)!;
+        onChange({ ...state, tuning: t });
+      },
+      "Tuning",
+    ),
+  );
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -164,14 +190,23 @@ function makeToggleGroup<T extends string>(
   options: { value: T; text: string }[],
   activeValue: T,
   onSelect: (value: T) => void,
+  ariaLabel?: string,
 ): HTMLElement {
   const group = document.createElement("div");
   group.className = "label-toggle";
+  if (ariaLabel) group.setAttribute("aria-label", ariaLabel);
+  group.setAttribute("role", "group");
   for (const opt of options) {
     const btn = document.createElement("button");
     btn.textContent = opt.text;
     btn.dataset["value"] = opt.value;
-    if (activeValue === opt.value) btn.classList.add("active");
+    btn.setAttribute("aria-label", `${opt.text}${ariaLabel ? ` — ${ariaLabel}` : ""}`);
+    if (activeValue === opt.value) {
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    } else {
+      btn.setAttribute("aria-pressed", "false");
+    }
     btn.addEventListener("click", () => onSelect(opt.value));
     group.appendChild(btn);
   }
@@ -193,10 +228,18 @@ function makeButtonGroup(
 
   const group = document.createElement("div");
   group.className = "btn-group";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", label);
   for (const name of options) {
     const btn = document.createElement("button");
     btn.textContent = name;
-    if (activeValue === name) btn.classList.add("active");
+    btn.setAttribute("aria-label", `${label}: ${name}`);
+    if (activeValue === name) {
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    } else {
+      btn.setAttribute("aria-pressed", "false");
+    }
     btn.addEventListener("click", () => onSelect(name));
     group.appendChild(btn);
   }

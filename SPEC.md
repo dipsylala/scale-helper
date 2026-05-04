@@ -28,136 +28,193 @@ note names.
 
 ### Control Bar
 
-1. As a learner, I want a dropdown to select a tuning, so that the neck reflects
+1. As a learner, I want a segmented toggle to select the number of strings (3–8),
+   so that the neck diagram matches my instrument. Switching string count selects
+   the first available tuning for that count.
+2. As a learner, I want a dropdown to select a tuning, so that the neck reflects
    the actual open-string pitches of my guitar.
-2. As a learner, I want a dropdown to select a scale (e.g. Major, Minor, Blues),
+3. As a learner, I want a button grid to select a scale (e.g. Major, Minor, Blues),
    so that I can explore different tonalities.
-3. As a learner, I want a dropdown to select the root note (C through B, using
+4. As a learner, I want a button row to select the root note (C through B, using
    sharps for accidentals), so that I can practise the scale in any key.
-4. As a learner, I want a number input (or stepper) to set how many frets are
+5. As a learner, I want a number input (or stepper) to set how many frets are
    shown (defaulting to 21), so that the diagram matches the length of my guitar
    neck.
-5. As a learner, I want a toggle/radio group to switch between three label styles
+6. As a learner, I want a toggle/radio group to switch between three label styles
    — **dots only**, **note names**, and **scale degrees** — so that I can focus on
    theory or on note names depending on my practice goal.
-6. As a learner, I want all controls to sit in a single row across the top of the
+7. As a learner, I want a right/left handed toggle to mirror the neck diagram,
+   so that it matches how I hold my guitar.
+8. As a learner, I want all controls to sit in a single row across the top of the
    page, so that the neck diagram has as much screen space as possible.
 
 ### Neck Diagram
 
-7. As a learner, I want to see a horizontal neck diagram with the lowest-pitched
+9. As a learner, I want to see a horizontal neck diagram with the lowest-pitched
    string at the bottom, consistent with standard guitar tablature.
-8. As a learner, I want open strings (fret 0) to be shown to the left of the nut,
-   so that I can include open-position notes in my practice.
-9. As a learner, I want standard fret position markers (single dots at frets 3, 5,
-   7, 9, 15, 17, 19; double dots at frets 12 and 21) rendered below the lowest
-   string, so that I can orient myself on the neck.
-10. As a learner, I want fret numbers displayed at the top of the diagram, so that
+10. As a learner, I want open strings (fret 0) to be shown to the left of the nut,
+    so that I can include open-position notes in my practice.
+11. As a learner, I want standard fret position markers (single dots at frets 3, 5,
+    7, 9, 15, 17, 19; double dots at frets 12 and 21) rendered below the lowest
+    string, so that I can orient myself on the neck.
+12. As a learner, I want fret numbers displayed at the top of the diagram, so that
     I can identify fret positions at a glance.
-11. As a learner, I want string names (the open-string note name) displayed at the
+13. As a learner, I want string names (the open-string note name) displayed at the
     far left, so that I know which string is which.
-12. As a learner, I want scale notes to be shown as filled circles on the
+14. As a learner, I want scale notes to be shown as filled circles on the
     appropriate string/fret intersections, so that I can see exactly where to place
     my fingers.
-13. As a learner, I want the root note to be displayed in a visually distinct
+15. As a learner, I want the root note to be displayed in a visually distinct
     colour or shape (e.g. filled square or contrasting colour), so that I always
     know where the tonic is.
-14. As a learner, I want non-scale notes to be invisible (no dot, no label), so
+16. As a learner, I want non-scale notes to be invisible (no dot, no label), so
     that the diagram is uncluttered.
 
 ### Appearance
 
-15. As a learner, I want a dark/light mode toggle in the header, so that I can
+17. As a learner, I want a dark/light mode toggle in the header, so that I can
     use the app comfortably in different lighting conditions.
-16. As a learner, I want my chosen theme to be remembered across sessions, so that
+18. As a learner, I want my chosen theme to be remembered across sessions, so that
     I do not have to switch it every time I open the app.
 
 ### Label Modes
 
-17. As a learner in **dots only** mode, I want scale-note circles to contain no
+19. As a learner in **dots only** mode, I want scale-note circles to contain no
     text, so that I can focus purely on patterns and shapes.
-18. As a learner in **note names** mode, I want each scale-note circle to display
+20. As a learner in **note names** mode, I want each scale-note circle to display
     the note's letter name (e.g. "A", "C#"), so that I can learn the names of the
     notes on the neck.
-19. As a learner in **scale degrees** mode, I want each scale-note circle to
+21. As a learner in **scale degrees** mode, I want each scale-note circle to
     display the degree number (1–7 for diatonic scales; 1, 2, 3, 5, 6 for
     pentatonic major; etc.), so that I can understand the function of each note
     within the scale.
 
 ### Reactivity
 
-20. As a learner, I want the neck to re-render immediately whenever I change any
+22. As a learner, I want the neck to re-render immediately whenever I change any
     control, without a page reload, so that I can explore different options quickly.
+
+### Audio
+
+23. As a learner, I want to click on a scale note to hear what it sounds like,
+    so that I can connect the visual position with the actual pitch.
+
+### Handedness
+
+24. As a left-handed player, I want to mirror the neck diagram so that the nut
+    is on the right and frets extend left, matching how I hold my guitar.
+
+### String Count
+
+25. As a player of non-standard instruments (7/8-string, bass, cigar box), I want
+    to select the number of strings so that the neck diagram matches my instrument.
 
 ---
 
 ## Acceptance Criteria
 
-1. The settings bar contains controls for: **Strings**, **Frets**, **Labels**, and **Handed**.
-   The selectors panel (below the fretboard) contains: **Scale** (with Common/Exotic filter toggle), **Root** (12 buttons), and **Tuning**.
-2. The **Tuning** dropdown offers the following options, grouped by category
-   (display name → open strings low-to-high):
+1. The settings bar contains controls for: **Strings** (segmented toggle for string count), **Frets** (number input), **Labels** (three-way toggle), and **Handed** (right/left toggle).
+   The selectors panel (below the fretboard) contains: **Root** (12 buttons), **Scale** (grid with Common/Exotic filter toggle), and **Tuning** (button group filtered by string count).
+2. The **Tuning** dropdown offers 33 options across 3–8 strings, grouped by category.
+   Selecting a string count filters the tuning list to only show tunings for that count.
+   Switching string count selects the first tuning for that count.
 
-   *Standard & variants*
-   - Standard → E A D G B E
-   - Half-step Down → Eb Ab Db Gb Bb Eb
-   - Full Step Down / D Standard → D G C F A D
-   - C Standard → C F Bb Eb G C
+   *Standard & variants (6-string)*
+   - Standard (E A D G B E) → 40 45 50 55 59 64
+   - Half-step Down (Eb Ab Db Gb Bb Eb) → 39 44 49 54 58 63
+   - Full Step Down / D Standard → 38 43 48 53 57 62
+   - C Standard (C F Bb Eb G C) → 36 41 46 51 55 60
 
-   *Drop tunings*
-   - Drop D → D A D G B E
-   - Double Drop D → D A D G B D
-   - Drop C → C G C F A D
+   *Drop tunings (6-string)*
+   - Drop D (D A D G B E) → 38 45 50 55 59 64
+   - Double Drop D (D A D G B D) → 38 45 50 55 59 62
+   - Drop C (C G C F A D) → 36 43 48 53 57 62
 
-   *Open tunings*
-   - Open G → D G D G B D
-   - Open D → D A D F# A D
-   - Open E → E B E G# B E
-   - Open A → E A E A C# E
-   - Open C → C G C G C E
+   *Open tunings (6-string)*
+   - Open G (D G D G B D) → 38 43 50 55 59 62
+   - Open D (D A D F# A D) → 38 45 50 54 57 62
+   - Open E (E B E G# B E) → 40 47 52 56 59 64
+   - Open A (E A E A C# E) → 40 45 52 57 61 64
+   - Open C (C G C G C E) → 36 43 48 55 60 64
 
-   *Modal / other*
-   - DADGAD → D A D G A D
+   *Modal / other (6-string)*
+   - DADGAD → 38 45 50 55 57 62
 
-3. The **Scale** dropdown offers the following scales, in order (common first,
-   then exotic/shred):
+   *7-string*
+   - 7-String Standard (B E A D G B E) → 35 40 45 50 55 59 64
+   - 7-String Drop A (A E A D G B E) → 33 40 45 50 55 59 64
+   - 7-String Half-step Down → 34 39 44 49 54 58 63
+
+   *8-string*
+   - 8-String Standard (F# B E A D G B E) → 30 35 40 45 50 55 59 64
+   - 8-String Drop E (E B E A D G B E) → 28 35 40 45 50 55 59 64
+   - 8-String Half-step Down → 29 34 39 44 49 54 58 63
+
+   *5-string bass*
+   - 5-String Bass Standard (B E A D G) → 23 28 33 38 43
+   - 5-String Bass High-C (E A D G C) → 28 33 38 43 48
+   - 5-String Bass Drop A (A E A D G) → 21 28 33 38 43
+
+   *4-string bass*
+   - 4-String Bass Standard (E A D G) → 28 33 38 43
+   - 4-String Bass Drop D (D A D G) → 26 33 38 43
+   - 4-String Bass D Standard (D G C F) → 26 31 36 41
+   - 4-String Bass Half-step Down → 27 32 37 42
+
+   *4-string cigar box*
+   - Cigar Box 4 Open G (G D G B) → 43 50 55 59
+   - Cigar Box 4 Open D (D A D F#) → 38 45 50 54
+   - Cigar Box 4 Open G Low (D G D G) → 38 43 50 55
+   - Cigar Box 4 Open E (E B E G#) → 40 47 52 56
+
+   *3-string cigar box*
+   - Cigar Box Open G (G D G) → 43 50 55
+   - Cigar Box Open D (D A D) → 38 45 50
+   - Cigar Box Open A (A E A) → 45 52 57
+
+3. The **Scale** selector offers the following scales in a button grid, in order (common first,
+   then exotic/shred), filterable by Common/Exotic toggle:
    Pentatonic Minor, Pentatonic Major, Blues, Natural Minor (Aeolian),
    Major (Ionian), Harmonic Minor, Dorian, Mixolydian, Melodic Minor,
    Phrygian, Lydian, Locrian, Phrygian Dominant, Lydian Dominant,
    Whole Tone, Diminished (Half-Whole), Diminished (Whole-Half),
    Double Harmonic Major, Hungarian Minor, Super Locrian (Altered), Enigmatic.
-4. The **Root** dropdown offers all 12 chromatic pitches using sharps for
+4. The **Root** selector offers all 12 chromatic pitches as a button row using sharps for
    accidentals: C, C#, D, D#, E, F, F#, G, G#, A, A#, B.
 5. The **Frets** input defaults to 21; the user can change it; values outside the
    range 12–24 are clamped or rejected.
 6. The **Labels** toggle has three states: Dots, Note Names, Scale Degrees.
 7. All controls default to: Standard tuning, Pentatonic Minor scale, root C, 21 frets, Dots
-   labels.
-18. A **theme toggle** button (🌙/☀️) is present in the header; clicking it
-    switches between dark and light themes.
-19. The selected theme is persisted in `localStorage` and restored on next load;
-    the default theme is dark.
-20. All UI colours (background, text, controls, neck) update immediately when the
+   labels, right-handed layout.
+8. A **theme toggle** button (🌙/☀️) is present in the header; clicking it
+   switches between dark and light themes.
+9. The selected theme is persisted in `localStorage` and restored on next load;
+   the default theme is dark.
+10. All UI colours (background, text, controls, neck) update immediately when the
     theme changes, via CSS custom properties on `<html data-theme>`.
-8. The neck diagram is drawn horizontally; the lowest-pitched string is at the
-   bottom, the highest-pitched string is at the top, consistent with standard
-   guitar tablature.
-9. Open strings (fret 0) are displayed as a column to the left of the nut line.
-10. Fret numbers are shown above each fret column (1, 2, 3 … N).
-11. String names are shown to the left of the open-string column.
-12. Standard fretboard position markers appear below the neck at frets 3, 5, 7, 9,
+11. The neck diagram is drawn horizontally; the lowest-pitched string is at the
+    bottom, the highest-pitched string is at the top, consistent with standard
+    guitar tablature.
+12. Open strings (fret 0) are displayed as a column to the left of the nut line.
+13. Fret numbers are shown above each fret column (1, 2, 3 … N).
+14. String names are shown to the left of the open-string column.
+15. Standard fretboard position markers appear below the neck at frets 3, 5, 7, 9,
     15, 17, 19, 21 (single dot) and 12, 24 (double dot), subject to the fret count.
-13. For E Major (root E, Major scale, Standard tuning), fret 0 string 6 is
+16. For E Major (root E, Major scale, Standard tuning), fret 0 string 6 is
     highlighted as the root and fret 0 string 1 is highlighted as the root.
-14. For E Major, exactly the notes E, F#, G#, A, B, C#, D# are highlighted across
+17. For E Major, exactly the notes E, F#, G#, A, B, C#, D# are highlighted across
     the entire neck; no other notes show dots.
-15. The root note dot is visually distinct (different fill colour or shape) from
+18. The root note dot is visually distinct (different fill colour or shape) from
     other scale-note dots.
-16. In Note Names mode every visible dot shows the correct note name with no text
+19. In Note Names mode every visible dot shows the correct note name with no text
     on non-scale frets.
-17. In Scale Degrees mode every visible dot shows the correct degree (e.g. root = 1,
+20. In Scale Degrees mode every visible dot shows the correct degree (e.g. root = 1,
     major second = 2).
-18. Changing any control updates the diagram without a full page reload.
+21. Changing any control updates the diagram without a full page reload.
+22. The **Handed** toggle switches between right-handed (nut left, frets extend right)
+    and left-handed (mirrored) layout.
+23. Clicking a scale note on the fretboard plays the corresponding note via the
+    Web Audio API (lazy AudioContext, plucked-string synthesis).
 
 ---
 
@@ -209,29 +266,49 @@ note names.
 - Defines each tuning as `{ name: string; strings: number[] }` where `strings` is
   an array of MIDI note numbers of length 3–8, ordered **low string first**,
   matching the neck's bottom-to-top visual order.
-- Exports a `TUNINGS` constant (all tunings), `AVAILABLE_STRING_COUNTS` (derived
-  from data), `getTuningsForStringCount(n)`, and a `getNoteAtFret(openMidi, fret)
-  => openMidi + fret` helper.
+- Exports a `TUNINGS` constant (33 tunings), `AVAILABLE_STRING_COUNTS` (derived
+  from data: `[3, 4, 5, 6, 7, 8]`), `getTuningsForStringCount(n)`, and a
+  `getNoteAtFret(openMidi, fret) => openMidi + fret` helper.
 - 33 tunings spanning 3–8 strings: standard 6-string variants, drop/open/modal,
   7- and 8-string electric, 4- and 5-string bass, and 3- and 4-string cigar box.
 
 **MIDI values for open strings (middle C = 60, low E standard = 40):**
 
-| Tuning | String 6→1 MIDI |
+| Tuning | Open Strings MIDI (low → high) |
 |---|---|
-| Standard | 40 45 50 55 59 64 |
-| Half-step Down | 39 44 49 54 58 63 |
+| Standard (E A D G B E) | 40 45 50 55 59 64 |
+| Half-step Down (Eb Ab Db Gb Bb Eb) | 39 44 49 54 58 63 |
 | Full Step Down / D Standard | 38 43 48 53 57 62 |
-| C Standard | 36 41 46 51 55 60 |
-| Drop D | 38 45 50 55 59 64 |
-| Double Drop D | 38 45 50 55 59 62 |
-| Drop C | 36 43 48 53 57 62 |
-| Open G | 38 43 50 55 59 62 |
-| Open D | 38 45 50 54 57 62 |
-| Open E | 40 47 52 56 59 64 |
-| Open A | 40 45 52 57 61 64 |
-| Open C | 36 43 48 55 60 64 |
+| C Standard (C F Bb Eb G C) | 36 41 46 51 55 60 |
+| Drop D (D A D G B E) | 38 45 50 55 59 64 |
+| Double Drop D (D A D G B D) | 38 45 50 55 59 62 |
+| Drop C (C G C F A D) | 36 43 48 53 57 62 |
+| Open G (D G D G B D) | 38 43 50 55 59 62 |
+| Open D (D A D F# A D) | 38 45 50 54 57 62 |
+| Open E (E B E G# B E) | 40 47 52 56 59 64 |
+| Open A (E A E A C# E) | 40 45 52 57 61 64 |
+| Open C (C G C G C E) | 36 43 48 55 60 64 |
 | DADGAD | 38 45 50 55 57 62 |
+| 7-String Standard (B E A D G B E) | 35 40 45 50 55 59 64 |
+| 7-String Drop A (A E A D G B E) | 33 40 45 50 55 59 64 |
+| 7-String Half-step Down | 34 39 44 49 54 58 63 |
+| 8-String Standard (F# B E A D G B E) | 30 35 40 45 50 55 59 64 |
+| 8-String Drop E (E B E A D G B E) | 28 35 40 45 50 55 59 64 |
+| 8-String Half-step Down | 29 34 39 44 49 54 58 63 |
+| 5-String Bass Standard (B E A D G) | 23 28 33 38 43 |
+| 5-String Bass High-C (E A D G C) | 28 33 38 43 48 |
+| 5-String Bass Drop A (A E A D G) | 21 28 33 38 43 |
+| 4-String Bass Standard (E A D G) | 28 33 38 43 |
+| 4-String Bass Drop D (D A D G) | 26 33 38 43 |
+| 4-String Bass D Standard (D G C F) | 26 31 36 41 |
+| 4-String Bass Half-step Down | 27 32 37 42 |
+| Cigar Box 4 Open G (G D G B) | 43 50 55 59 |
+| Cigar Box 4 Open D (D A D F#) | 38 45 50 54 |
+| Cigar Box 4 Open G Low (D G D G) | 38 43 50 55 |
+| Cigar Box 4 Open E (E B E G#) | 40 47 52 56 |
+| Cigar Box Open G (G D G) | 43 50 55 |
+| Cigar Box Open D (D A D) | 38 45 50 |
+| Cigar Box Open A (A E A) | 45 52 57 |
 
 #### `fretboard.ts` — Fretboard Model (deep module)
 - Accepts a tuning, a scale, a root pitch-class (0–11), and a fret count.
@@ -247,49 +324,48 @@ note names.
 
 #### `renderer.ts` — SVG Neck Renderer
 - Accepts the 2D `Cell[][]` grid, a `LabelMode` string union (`"dots" |
-  "noteNames" | "degrees"`), the fret count, and a `Palette` object.
-- The `Palette` is passed explicitly by `main.ts` (not read from the DOM inside
-  the renderer), keeping `renderNeck` a pure function of its arguments.
-- Exports `getPalette(theme: "dark" | "light"): Palette` so callers can obtain
-  the correct palette before passing it in.
-- Two built-in palettes: `DARK_PALETTE` (default) and `LIGHT_PALETTE`.
+  "noteNames" | "degrees"`), the fret count, and a `leftHanded` boolean.
+- All neck colours are CSS custom properties (e.g. `var(--neck-root)`,
+  `var(--neck-scale)`) defined in `style.css` under `:root` and
+  `[data-theme="light"]`. The SVG inherits the active theme automatically —
+  no palette object or re-render needed on theme change.
+- Two built-in themes: dark (default) and light, switched via
+  `<html data-theme="dark" | "light">`.
 - Responsible for: neck background rect, nut, fret lines, string lines, position
   markers, fret number labels, string name labels, open-string column, scale-note
   dots.
 - Root dots are rendered as rotated diamonds (amber); other scale dots are circles
   (blue); non-scale positions are empty.
+- Open strings (fret 0) are rendered as hollow shapes (transparent fill, coloured
+  stroke); fretted notes are filled.
+- Each note dot is wrapped in a clickable `<g>` group; clicking plays the note
+  via `playNote()` from `audio.ts`.
 - Re-renders by replacing the SVG element.
 
+#### `audio.ts` — Web Audio API Note Playback
+- Lazy `AudioContext` (created on first user gesture to comply with browser
+  autoplay policy). Resumes if suspended (e.g. after page backgrounding).
+- `playNote(midi: number)`: plays a short plucked-string tone for the given
+  MIDI note using a sawtooth oscillator shaped by a low-pass filter sweep
+  and gain decay envelope (~1.6s decay).
+- Invoked when a user clicks a scale note dot on the fretboard.
+
 #### `state.ts` — Shared State Types
-- Exports the `AppState` interface and `DEFAULT_STATE` constant.
+- Exports the `AppState` interface and `LabelMode` type union.
+- Uses `import type` for `Tuning` and `Scale` — erased at compile time, zero runtime dependency.
 - Imported by `controls.ts`, `persistence.ts`, and `main.ts` so the type
   definition has a single authoritative home.
 
-#### `controls.ts` — Settings Bar & Selectors Panel
-- `mountSettings(el, state, onChange)`: mounts the top bar (Strings toggle,
-  Frets input, Labels toggle, Handed toggle).
-- `mountSelectors(el, state, onChange)`: mounts the below-fretboard panel
-  (Scale grid with Common/Exotic filter, Root 12-button row, Tuning button group).
-- Fires `onChange` with the full new `AppState` whenever any control changes.
-- Imports `AppState` from `state.ts`.
-
-#### `persistence.ts` — State & Theme Persistence
-- Saves and restores `AppState` and the active theme via `localStorage`.
-- State is serialised by **name** (not array index), so it is robust to
-  scale/tuning reordering.
-- Validates all fields on load; falls back to `DEFAULT_STATE` for any missing or
-  out-of-range value.
-- Exports: `saveState`, `loadState`, `saveTheme`, `loadTheme`.
-- Theme type is `"dark" | "light"` throughout — no raw strings.
-
 #### `main.ts` — Application Entry Point
+- Defines `DEFAULT_STATE` (Standard tuning, Pentatonic Minor, root C, 21 frets, Dots, right-handed).
 - Instantiates controls, renderer, and persistence.
 - Holds application state (`AppState`) and current theme (`"dark" | "light"`).
 - Restores state and theme from `localStorage` on boot.
 - On a control change: saves state, recomputes the fretboard model, re-renders
-  the neck with the current palette, and remounts controls to reflect new state.
-- On theme toggle: only re-renders the SVG neck (controls don't need remounting
-  since theme is not part of `AppState`).
+  the neck, and remounts controls to reflect new state.
+- On theme toggle: updates the `data-theme` attribute on `<html>` and the
+  toggle button emoji. SVG colours are CSS custom properties so the browser
+  repaints automatically — no re-render needed.
 - Owns the dark/light mode toggle button and updates the `data-theme` attribute
   on `<html>` so CSS variables switch instantly.
 
@@ -308,6 +384,12 @@ note names.
   octave differences on the neck are transparent.
 - Accidentals use **sharps only** throughout the codebase. Flat display is out of
   scope for v1.
+- **CSS custom properties** for theming: all neck colours use `var()` references
+  so theme switching requires no re-render — the browser repaints automatically
+  when `<html data-theme>` changes.
+- **Web Audio API** for note playback: click-to-play uses a lazy `AudioContext`
+  with a sawtooth oscillator + low-pass filter sweep to approximate a plucked
+  string tone.
 
 ---
 
@@ -343,9 +425,8 @@ implementation. They do not import private helpers or test intermediate state.
 - Custom / user-defined scales
 - Capo support
 - Chord diagrams
-- Audio / playback of scale notes
-- Mobile-first / responsive layout (the diagram may overflow on small screens)
 - Flat accidental display
+- Mobile-first / responsive layout (the diagram may overflow on small screens)
 
 ---
 

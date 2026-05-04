@@ -23,6 +23,8 @@ All selections are remembered between sessions via `localStorage`.
 | **Handed** | Right-handed (normal) or left-handed (mirrored neck) |
 | **🌙 / ☀️** | Toggle dark/light mode |
 
+Click any scale note on the fretboard to hear it played.
+
 ## Running locally
 
 ```bash
@@ -50,14 +52,15 @@ To enable this on a fresh fork: **Settings → Pages → Source → GitHub Actio
 
 ```
 src/
-  state.ts        AppState interface and DEFAULT_STATE
+  state.ts        AppState interface and LabelMode type (pure types, zero imports at runtime)
   scales.ts       Scale registry — interval arrays, degree labels, categories
   tunings.ts      Tuning registry — MIDI open-string values, 3–8 strings
   fretboard.ts    Builds the 2-D Cell grid from tuning + scale + root
   renderer.ts     Renders the fretboard as an SVG element
   controls.ts     Builds the settings bar and selectors, fires onChange callbacks
   persistence.ts  Saves/restores state and theme via localStorage
-  main.ts         Application entry point — wires everything together
+  audio.ts        Web Audio API note playback (click a note to hear it)
+  main.ts         Application entry point — DEFAULT_STATE, wires everything together
   style.css       CSS custom-property theming (dark + light)
 ```
 

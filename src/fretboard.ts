@@ -9,7 +9,20 @@
 import { Scale, getScaleNotes, getDegreeLabel } from "./scales";
 import { Tuning, getNoteAtFret } from "./tunings";
 
-export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
+export const NOTE_NAMES = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B",
+] as const;
 
 export interface Cell {
   midi: number;

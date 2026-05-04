@@ -8,18 +8,16 @@ import { Cell, NOTE_NAMES } from "./fretboard";
 import { playNote } from "./audio";
 import { LabelMode } from "./state";
 
-export type { LabelMode };
-
 // ── Layout constants ─────────────────────────────────────────────────────────
-const STRING_SPACING = 28;       // px between strings
-const FRET_WIDTH = 48;           // px per fret column
-const OPEN_COL_WIDTH = 44;       // px for the open-string (fret 0) column
-const NUT_WIDTH = 6;             // px width of the nut bar
-const PADDING_TOP = 28;          // space above highest string (fret numbers)
-const PADDING_BOTTOM = 16;       // space below lowest string
-const PADDING_LEFT = 36;         // space left of open column (string labels)
-const NECK_EXTRA_RIGHT = 16;     // px past the last fret line to close off the neck
-const NECK_V_BLEED = 4;          // px the neck background extends beyond the outer strings
+const STRING_SPACING = 28; // px between strings
+const FRET_WIDTH = 48; // px per fret column
+const OPEN_COL_WIDTH = 44; // px for the open-string (fret 0) column
+const NUT_WIDTH = 6; // px width of the nut bar
+const PADDING_TOP = 28; // space above highest string (fret numbers)
+const PADDING_BOTTOM = 16; // space below lowest string
+const PADDING_LEFT = 36; // space left of open column (string labels)
+const NECK_EXTRA_RIGHT = 16; // px past the last fret line to close off the neck
+const NECK_V_BLEED = 4; // px the neck background extends beyond the outer strings
 const DOT_RADIUS = 11;
 const FONT_SIZE_LABEL = 10;
 const FONT_SIZE_FRET = 11;
@@ -31,9 +29,15 @@ const TEXT_V_OFFSET = FONT_SIZE_LABEL * 0.35;
 // Position markers: fret → single | double
 // Pattern: single at 3,5,7,9 and double at 12, then repeats (+12 each octave)
 const POSITION_MARKERS: Record<number, "single" | "double"> = {
-  3: "single", 5: "single", 7: "single", 9: "single",
+  3: "single",
+  5: "single",
+  7: "single",
+  9: "single",
   12: "double",
-  15: "single", 17: "single", 19: "single", 21: "single",
+  15: "single",
+  17: "single",
+  19: "single",
+  21: "single",
   24: "double",
 };
 
@@ -41,16 +45,16 @@ const POSITION_MARKERS: Record<number, "single" | "double"> = {
 // All neck colours are CSS custom properties so the SVG inherits the active
 // theme automatically. No palette object or re-render needed on theme change.
 const C = {
-  root:        "var(--neck-root)",
-  scale:       "var(--neck-scale)",
-  text:        "var(--neck-dot-text)",
-  string:      "var(--neck-string)",
-  fret:        "var(--neck-fret)",
-  nut:         "var(--neck-nut)",
-  neckBg:      "var(--neck-bg)",
-  neckEdge:    "var(--neck-edge)",
-  marker:      "var(--neck-marker)",
-  fretNum:     "var(--neck-fret-num)",
+  root: "var(--neck-root)",
+  scale: "var(--neck-scale)",
+  text: "var(--neck-dot-text)",
+  string: "var(--neck-string)",
+  fret: "var(--neck-fret)",
+  nut: "var(--neck-nut)",
+  neckBg: "var(--neck-bg)",
+  neckEdge: "var(--neck-edge)",
+  marker: "var(--neck-marker)",
+  fretNum: "var(--neck-fret-num)",
   stringLabel: "var(--neck-string-label)",
 } as const;
 
@@ -74,13 +78,14 @@ export function renderNeck(
 ): void {
   const numStrings = grid.length;
 
-  const totalWidth  = PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + fretCount * FRET_WIDTH + NECK_EXTRA_RIGHT;
+  const totalWidth =
+    PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + fretCount * FRET_WIDTH + NECK_EXTRA_RIGHT;
   const totalHeight = PADDING_TOP + (numStrings - 1) * STRING_SPACING + PADDING_BOTTOM;
 
   // Mirror x coordinate for left-handed layout
-  const mx  = (x: number): number => leftHanded ? totalWidth - x : x;
+  const mx = (x: number): number => (leftHanded ? totalWidth - x : x);
   // Mirror the left edge of a rect (its right edge becomes the mirrored left edge)
-  const mrx = (x: number, w: number): number => leftHanded ? totalWidth - x - w : x;
+  const mrx = (x: number, w: number): number => (leftHanded ? totalWidth - x - w : x);
 
   const svg = svgEl("svg");
   attr(svg, {
@@ -110,8 +115,10 @@ export function renderNeck(
   const neckH = (numStrings - 1) * STRING_SPACING + NECK_V_BLEED * 2;
   const neckBg = svgEl("rect");
   attr(neckBg, {
-    x: mrx(neckX, neckW), y: neckY,
-    width: neckW, height: neckH,
+    x: mrx(neckX, neckW),
+    y: neckY,
+    width: neckW,
+    height: neckH,
     fill: C.neckBg,
     rx: 4,
     stroke: C.neckEdge,
@@ -124,8 +131,10 @@ export function renderNeck(
     const x = mx(PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + f * FRET_WIDTH);
     const line = svgEl("line");
     attr(line, {
-      x1: x, y1: PADDING_TOP,
-      x2: x, y2: PADDING_TOP + (numStrings - 1) * STRING_SPACING,
+      x1: x,
+      y1: PADDING_TOP,
+      x2: x,
+      y2: PADDING_TOP + (numStrings - 1) * STRING_SPACING,
       stroke: C.fret,
       "stroke-width": 1,
     });
@@ -170,8 +179,10 @@ export function renderNeck(
     // Thicker strings for lower-pitched strings
     const thickness = 1 + ((numStrings - 1 - s) / (numStrings - 1)) * 2;
     attr(line, {
-      x1: mx(PADDING_LEFT + OPEN_COL_WIDTH), y1: y,
-      x2: mx(totalWidth - 8), y2: y,
+      x1: mx(PADDING_LEFT + OPEN_COL_WIDTH),
+      y1: y,
+      x2: mx(totalWidth - 8),
+      y2: y,
       stroke: C.string,
       "stroke-width": thickness,
     });
@@ -205,13 +216,178 @@ export function renderNeck(
       // Open strings (fret 0) are hollow; fretted notes are filled.
       // "transparent" rather than "none" so the interior is still a click target.
       const open = f === 0;
-      const dotFill   = open ? "transparent" : color;
+      const dotFill = open ? "transparent" : color;
       const dotStroke = color;
 
       // Wrap shape + label in a clickable group
       const noteGroup = svgEl("g");
       noteGroup.style.cursor = "pointer";
+
+      // Accessible title for screen readers
+      const title = svgEl("title");
+      const fretLabel = f === 0 ? "open" : `fret ${f}`;
+      const stringLabel = `string ${numStrings - s}`;
+      const rootTag = cell.isRoot ? " (root)" : "";
+      title.textContent = `${cell.noteName}${rootTag}, ${stringLabel}, ${fretLabel}`;
+      noteGroup.appendChild(title);
+
       noteGroup.addEventListener("click", () => playNote(cell.midi));
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
+      noteGroup.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          playNote(cell.midi);
+        }
+      });
 
       if (cell.isRoot) {
         // Root: diamond (rotated square)
@@ -232,7 +408,9 @@ export function renderNeck(
       } else {
         const circle = svgEl("circle");
         attr(circle, {
-          cx, cy, r: DOT_RADIUS,
+          cx,
+          cy,
+          r: DOT_RADIUS,
           fill: dotFill,
           stroke: dotStroke,
           "stroke-width": open ? 2 : 0,

@@ -26,16 +26,16 @@ export function playNote(midi: number): void {
   // Resume if suspended (browser may pause context when page is backgrounded)
   if (ac.state === "suspended") void ac.resume();
 
-  const freq  = midiToHz(midi);
-  const now   = ac.currentTime;
+  const freq = midiToHz(midi);
+  const now = ac.currentTime;
   const decay = 1.6; // seconds
 
-  const osc    = ac.createOscillator();
+  const osc = ac.createOscillator();
   const filter = ac.createBiquadFilter();
-  const gain   = ac.createGain();
+  const gain = ac.createGain();
 
   // Sawtooth is rich in harmonics — the filter sweep tames it into a pluck
-  osc.type          = "sawtooth";
+  osc.type = "sawtooth";
   osc.frequency.value = freq;
 
   // Low-pass filter: bright at attack, rolls off over the decay
