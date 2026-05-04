@@ -54,6 +54,178 @@ header h1 {
   letter-spacing: 0.04em;
 }
 
+/* ── Settings bar (top) ───────────────────────────────────────────────────── */
+#settings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+#settings label {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+#settings select,
+#settings input.fret-input {
+  background: var(--control-bg);
+  color: var(--text);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+#settings select:focus,
+#settings input.fret-input:focus {
+  border-color: var(--accent);
+}
+
+#settings input.fret-input {
+  width: 58px;
+  text-align: center;
+}
+
+/* ── Selectors bar (below fretboard) ─────────────────────────────────────── */
+#selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+/* ── Root row: 12 equal-width buttons ───────────────────────────────────── */
+.root-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+}
+
+.root-row button {
+  background: var(--control-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 6px 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.root-row button:hover {
+  background: var(--control-hover);
+  color: var(--text);
+}
+
+.root-row button.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  border-color: var(--accent);
+}
+
+/* ── Scale section: grid + filter toggle ────────────────────────────────── */
+.scale-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scale-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 4px;
+}
+
+.scale-grid button {
+  background: var(--control-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scale-grid button:hover {
+  background: var(--control-hover);
+  color: var(--text);
+}
+
+.scale-grid button.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  border-color: var(--accent);
+}
+
+.scale-filter {
+  align-self: center;
+}
+
+/* ── Button groups (tuning) ──────────────────────────────────────────────── */
+.btn-group-wrap {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: start;
+  gap: 8px;
+}
+
+.btn-group-label {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  padding-top: 5px;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.btn-group button {
+  background: var(--control-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-group button:hover {
+  background: var(--control-hover);
+  color: var(--text);
+}
+
+.btn-group button.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  border-color: var(--accent);
+}
+
+/* ── Legacy: keep #controls selector working if referenced anywhere ─────── */
 #controls {
   display: flex;
   align-items: center;
@@ -68,29 +240,6 @@ header h1 {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   white-space: nowrap;
-}
-
-#controls select,
-#controls input.fret-input {
-  background: var(--control-bg);
-  color: var(--text);
-  border: 1px solid var(--control-border);
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  outline: none;
-  transition: background 0.2s, color 0.2s;
-}
-
-#controls select:focus,
-#controls input.fret-input:focus {
-  border-color: var(--accent);
-}
-
-#controls input.fret-input {
-  width: 58px;
-  text-align: center;
 }
 
 /* ── Label toggle group ───────────────────────────────────────────────────── */

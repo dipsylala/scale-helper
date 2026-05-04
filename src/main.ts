@@ -3,13 +3,14 @@
 // Wires controls → fretboard model → renderer.
 // ---------------------------------------------------------------------------
 
-import { mountControls, AppState } from "./controls";
+import { mountSettings, mountSelectors, AppState } from "./controls";
 import { buildFretboard } from "./fretboard";
 import { renderNeck, getPalette } from "./renderer";
 import { saveState, loadState, saveTheme, loadTheme } from "./persistence";
 
-const controlsEl = document.getElementById("controls")!;
-const neckEl     = document.getElementById("neck")!;
+const settingsEl  = document.getElementById("settings")!;
+const selectorsEl = document.getElementById("selectors")!;
+const neckEl      = document.getElementById("neck")!;
 const themeBtn   = document.getElementById("theme-toggle") as HTMLButtonElement;
 
 // ── Restore theme ─────────────────────────────────────────────────────────────
@@ -34,9 +35,8 @@ function render(s: AppState): void {
   const grid = buildFretboard(s.tuning, s.scale, s.root, s.fretCount);
   // palette is passed explicitly so renderNeck has no hidden DOM dependency
   renderNeck(neckEl, grid, s.labelMode, s.fretCount, getPalette(theme), s.handedness === "left");
-  // Controls are re-mounted on every render so the Labels toggle reflects the
-  // current active state. If focus/animation is added later, make surgical updates instead.
-  mountControls(controlsEl, state, render);
+  mountSettings(settingsEl, state, render);
+  mountSelectors(selectorsEl, state, render);
 }
 
 // Boot
