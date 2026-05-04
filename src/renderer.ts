@@ -59,7 +59,7 @@ const DARK_PALETTE: Palette = {
   nut:         "#cccccc",
   neckBg:      "#2a1f14",
   neckEdge:    "#3d2b18",
-  marker:      "#666666",
+  marker:      "#c0c0c0",
   fretNum:     "#aaaaaa",
   stringLabel: "#cccccc",
 };
@@ -73,7 +73,7 @@ const LIGHT_PALETTE: Palette = {
   nut:         "#3a2e24",
   neckBg:      "#c8a96e",
   neckEdge:    "#a07840",
-  marker:      "#7a6040",
+  marker:      "#1a1a1a",
   fretNum:     "#555555",
   stringLabel: "#333333",
 };
@@ -176,6 +176,26 @@ export function renderNeck(
   });
   svg.appendChild(nut);
 
+  // ── Position markers (on fretboard, at vertical midpoint) ─────────────────
+  const markerCenterY = PADDING_TOP + ((numStrings - 1) * STRING_SPACING) / 2;
+  for (const [fretStr, kind] of Object.entries(POSITION_MARKERS)) {
+    const f = Number(fretStr);
+    if (f > fretCount) continue;
+    const cx = mx(fretX(f));
+    if (kind === "single") {
+      const circle = svgEl("circle");
+      attr(circle, { cx, cy: markerCenterY, r: 5, fill: C.marker });
+      svg.appendChild(circle);
+    } else {
+      // double dot — offset horizontally
+      for (const offset of [-8, 8]) {
+        const circle = svgEl("circle");
+        attr(circle, { cx: cx + offset, cy: markerCenterY, r: 5, fill: C.marker });
+        svg.appendChild(circle);
+      }
+    }
+  }
+
   // ── String lines ──────────────────────────────────────────────────────────
   for (let s = 0; s < numStrings; s++) {
     const y = stringY(s);
@@ -220,26 +240,6 @@ export function renderNeck(
     });
     t.textContent = NOTE_NAMES[cell.midi % 12];
     svg.appendChild(t);
-  }
-
-  // ── Position markers (below neck) ─────────────────────────────────────────
-  const markerY = PADDING_TOP + (numStrings - 1) * STRING_SPACING + 18;
-  for (const [fretStr, kind] of Object.entries(POSITION_MARKERS)) {
-    const f = Number(fretStr);
-    if (f > fretCount) continue;
-    const cx = mx(fretX(f));
-    if (kind === "single") {
-      const circle = svgEl("circle");
-      attr(circle, { cx, cy: markerY, r: 5, fill: C.marker });
-      svg.appendChild(circle);
-    } else {
-      // double dot
-      for (const offset of [-8, 8]) {
-        const circle = svgEl("circle");
-        attr(circle, { cx: cx + offset, cy: markerY, r: 5, fill: C.marker });
-        svg.appendChild(circle);
-      }
-    }
   }
 
   // ── Note dots ─────────────────────────────────────────────────────────────
