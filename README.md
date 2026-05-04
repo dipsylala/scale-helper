@@ -8,7 +8,7 @@ A static web application for visualising guitar scales on a fretboard diagram.
 
 Pick a tuning, a scale, and a root note — the fretboard updates instantly to show every note in that scale across the full neck. Root notes are highlighted differently from other scale tones. Labels can be switched between plain dots, note names, and scale degrees.
 
-All selections are remembered between sessions via `localStorage`.
+All selections are remembered between sessions via `localStorage`. The URL also changes so if you want to share a particular set of settings, or bookmark them you can.
 
 ## Controls
 
