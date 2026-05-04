@@ -9,7 +9,7 @@ import { playNote } from "./audio";
 import { LabelMode } from "./state";
 
 // ── Custom event ──────────────────────────────────────────────────────────────
-export interface NeckPlayDetail {
+interface NeckPlayDetail {
   stringIdx: number;
   fretIdx: number;
   midi: number;
@@ -356,7 +356,7 @@ export function renderNeck(
  * to clear any existing highlight.  The `.note-active` CSS class applies a
  * brightness/drop-shadow filter to the note group.
  */
-export function setActiveNote(container: HTMLElement, key: string | null): void {
+function setActiveNote(container: HTMLElement, key: string | null): void {
   for (const el of container.querySelectorAll(".note-active")) {
     el.classList.remove("note-active");
   }
