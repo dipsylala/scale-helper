@@ -153,7 +153,11 @@ export function renderNeck(
   svg.appendChild(nut);
 
   // ── Position markers (on fretboard, at vertical midpoint) ─────────────────
-  const markerCenterY = PADDING_TOP + ((numStrings - 1) * STRING_SPACING) / 2;
+  const neckSpan = (numStrings - 1) * STRING_SPACING;
+  const markerCenterY = PADDING_TOP + neckSpan / 2;
+  // Double-dot vertical offset: 20% of neck height so it scales with string count.
+  // 3-str ≈ 11 px · 6-str ≈ 28 px · 8-str ≈ 39 px
+  const doubleOffset = Math.round(neckSpan * 0.20);
   for (const [fretStr, kind] of Object.entries(POSITION_MARKERS)) {
     const f = Number(fretStr);
     if (f > fretCount) continue;
@@ -163,10 +167,10 @@ export function renderNeck(
       attr(circle, { cx, cy: markerCenterY, r: 5, fill: C.marker });
       svg.appendChild(circle);
     } else {
-      // double dot — offset horizontally
-      for (const offset of [-8, 8]) {
+      // double dot — offset vertically, proportional to neck height
+      for (const offset of [-doubleOffset, doubleOffset]) {
         const circle = svgEl("circle");
-        attr(circle, { cx: cx + offset, cy: markerCenterY, r: 5, fill: C.marker });
+        attr(circle, { cx, cy: markerCenterY + offset, r: 5, fill: C.marker });
         svg.appendChild(circle);
       }
     }
