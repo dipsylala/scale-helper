@@ -431,15 +431,18 @@ export function exportNeck(
     return;
   }
 
-  // PNG: render the SVG onto an offscreen canvas.
+  // PNG: render the SVG onto an offscreen canvas at 2× resolution.
   const pxW = Number(clone.getAttribute("width") || vbW);
   const pxH = Number(clone.getAttribute("height") || vbH);
+  const scale = 2;
   const img = new Image();
   img.onload = () => {
     const canvas = document.createElement("canvas");
-    canvas.width = pxW;
-    canvas.height = pxH;
-    canvas.getContext("2d")!.drawImage(img, 0, 0);
+    canvas.width = pxW * scale;
+    canvas.height = pxH * scale;
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0);
     canvas.toBlob((blob) => {
       if (blob) {
         const pngUrl = URL.createObjectURL(blob);
