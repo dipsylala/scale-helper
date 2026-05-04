@@ -99,12 +99,21 @@ export function renderNeck(
   labelMode: LabelMode,
   fretCount: number,
   palette: Palette,
+  leftHanded = false,
 ): void {
   const numStrings = grid.length;
   const C = palette;
 
   const totalWidth  = PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + fretCount * FRET_WIDTH + NECK_EXTRA_RIGHT;
   const totalHeight = PADDING_TOP + (numStrings - 1) * STRING_SPACING + PADDING_BOTTOM;
+
+  // Mirror x coordinate for left-handed layout
+  const mx  = (x: number): number => leftHanded ? totalWidth - x : x;
+  // Mirror the left edge of a rect (its right edge becomes the mirrored left edge)
+  const mrx = (x: number, w: number): number => leftHanded ? totalWidth - x - w : x;
+  // Flip text-anchor horizontally
+  const ta  = (anchor: "start" | "end" | "middle"): string =>
+    leftHanded && anchor !== "middle" ? (anchor === "start" ? "end" : "start") : anchor;
 
   const svg = svgEl("svg");
   attr(svg, {
@@ -134,7 +143,7 @@ export function renderNeck(
   const neckH = (numStrings - 1) * STRING_SPACING + NECK_V_BLEED * 2;
   const neckBg = svgEl("rect");
   attr(neckBg, {
-    x: neckX, y: neckY,
+    x: mrx(neckX, neckW), y: neckY,
     width: neckW, height: neckH,
     fill: C.neckBg,
     rx: 4,
@@ -145,7 +154,7 @@ export function renderNeck(
 
   // ── Fret lines ────────────────────────────────────────────────────────────
   for (let f = 0; f <= fretCount; f++) {
-    const x = PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + f * FRET_WIDTH;
+    const x = mx(PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + f * FRET_WIDTH);
     const line = svgEl("line");
     attr(line, {
       x1: x, y1: PADDING_TOP,
@@ -159,7 +168,7 @@ export function renderNeck(
   // ── Nut ───────────────────────────────────────────────────────────────────
   const nut = svgEl("rect");
   attr(nut, {
-    x: PADDING_LEFT + OPEN_COL_WIDTH,
+    x: mrx(PADDING_LEFT + OPEN_COL_WIDTH, NUT_WIDTH),
     y: PADDING_TOP,
     width: NUT_WIDTH,
     height: (numStrings - 1) * STRING_SPACING,
@@ -174,8 +183,8 @@ export function renderNeck(
     // Thicker strings for lower-pitched strings
     const thickness = 1 + ((numStrings - 1 - s) / (numStrings - 1)) * 2;
     attr(line, {
-      x1: PADDING_LEFT, y1: y,
-      x2: totalWidth - 8, y2: y,
+      x1: mx(PADDING_LEFT), y1: y,
+      x2: mx(totalWidth - 8), y2: y,
       stroke: C.string,
       "stroke-width": thickness,
     });
@@ -186,7 +195,7 @@ export function renderNeck(
   for (let f = 1; f <= fretCount; f++) {
     const t = svgEl("text");
     attr(t, {
-      x: fretX(f),
+      x: mx(fretX(f)),
       y: PADDING_TOP - 18,
       "text-anchor": "middle",
       "font-size": FONT_SIZE_FRET,
@@ -202,9 +211,9 @@ export function renderNeck(
     const cell = grid[s][0];
     const t = svgEl("text");
     attr(t, {
-      x: PADDING_LEFT - 6,
+      x: mx(PADDING_LEFT - 6),
       y: stringY(s) + 4,
-      "text-anchor": "end",
+      "text-anchor": ta("end"),
       "font-size": FONT_SIZE_STRING,
       fill: C.stringLabel,
       "font-family": "sans-serif",
@@ -218,7 +227,7 @@ export function renderNeck(
   for (const [fretStr, kind] of Object.entries(POSITION_MARKERS)) {
     const f = Number(fretStr);
     if (f > fretCount) continue;
-    const cx = fretX(f);
+    const cx = mx(fretX(f));
     if (kind === "single") {
       const circle = svgEl("circle");
       attr(circle, { cx, cy: markerY, r: 5, fill: C.marker });
@@ -239,7 +248,7 @@ export function renderNeck(
       const cell = grid[s][f];
       if (!cell.inScale) continue;
 
-      const cx = fretX(f);
+      const cx = mx(fretX(f));
       const cy = stringY(s);
       const fill = cell.isRoot ? C.root : C.scale;
 

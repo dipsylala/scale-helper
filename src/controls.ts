@@ -15,6 +15,7 @@ export interface AppState {
   root: number;       // pitch-class 0–11
   fretCount: number;
   labelMode: LabelMode;
+  handedness: "right" | "left";
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -23,6 +24,7 @@ export const DEFAULT_STATE: AppState = {
   root: 0,            // C
   fretCount: 21,
   labelMode: "dots",
+  handedness: "right",
 };
 
 export function mountControls(
@@ -114,6 +116,28 @@ export function mountControls(
     labelGroup.appendChild(btn);
   }
   container.appendChild(labelGroup);
+
+  // ── Handed ────────────────────────────────────────────────────────────────
+  container.appendChild(makeLabel("Handed"));
+  const handedGroup = document.createElement("div");
+  handedGroup.className = "label-toggle";
+
+  const handedOptions: { value: "right" | "left"; text: string }[] = [
+    { value: "right", text: "Right" },
+    { value: "left",  text: "Left"  },
+  ];
+
+  for (const opt of handedOptions) {
+    const btn = document.createElement("button");
+    btn.textContent = opt.text;
+    btn.dataset["value"] = opt.value;
+    if (state.handedness === opt.value) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      onChange({ ...state, handedness: opt.value });
+    });
+    handedGroup.appendChild(btn);
+  }
+  container.appendChild(handedGroup);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
