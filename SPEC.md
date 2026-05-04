@@ -1,4 +1,4 @@
-# Scale Helper — Product Spec
+# Scale Helper — Product and Technical Spec
 
 ## Problem Statement
 
