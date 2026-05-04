@@ -203,7 +203,7 @@ export function renderNeck(
     // Thicker strings for lower-pitched strings
     const thickness = 1 + ((numStrings - 1 - s) / (numStrings - 1)) * 2;
     attr(line, {
-      x1: mx(PADDING_LEFT), y1: y,
+      x1: mx(PADDING_LEFT + OPEN_COL_WIDTH), y1: y,
       x2: mx(totalWidth - 8), y2: y,
       stroke: C.string,
       "stroke-width": thickness,
@@ -226,22 +226,6 @@ export function renderNeck(
     svg.appendChild(t);
   }
 
-  // ── String name labels (left of open column) ─────────────────────────────
-  for (let s = 0; s < numStrings; s++) {
-    const cell = grid[s][0];
-    const t = svgEl("text");
-    attr(t, {
-      x: mx(PADDING_LEFT - 6),
-      y: stringY(s) + 4,
-      "text-anchor": ta("end"),
-      "font-size": FONT_SIZE_STRING,
-      fill: C.stringLabel,
-      "font-family": "sans-serif",
-    });
-    t.textContent = NOTE_NAMES[cell.midi % 12];
-    svg.appendChild(t);
-  }
-
   // ── Note dots ─────────────────────────────────────────────────────────────
   for (let s = 0; s < numStrings; s++) {
     for (let f = 0; f <= fretCount; f++) {
@@ -250,10 +234,14 @@ export function renderNeck(
 
       const cx = mx(fretX(f));
       const cy = stringY(s);
-      const fill = cell.isRoot ? C.root : C.scale;
+      const color = cell.isRoot ? C.root : C.scale;
+      // Open strings (fret 0) are hollow; fretted notes are filled
+      const open = f === 0;
+      const dotFill   = open ? "none" : color;
+      const dotStroke = color;
 
       if (cell.isRoot) {
-        // Root: filled square (rotated 45° diamond)
+        // Root: diamond (rotated square)
         const size = DOT_RADIUS * 1.1;
         const diamond = svgEl("rect");
         attr(diamond, {
@@ -262,20 +250,30 @@ export function renderNeck(
           width: size * 1.5,
           height: size * 1.5,
           rx: 3,
-          fill,
+          fill: dotFill,
+          stroke: dotStroke,
+          "stroke-width": open ? 2 : 0,
           transform: `rotate(45 ${cx} ${cy})`,
         });
         svg.appendChild(diamond);
       } else {
         const circle = svgEl("circle");
-        attr(circle, { cx, cy, r: DOT_RADIUS, fill });
+        attr(circle, {
+          cx, cy, r: DOT_RADIUS,
+          fill: dotFill,
+          stroke: dotStroke,
+          "stroke-width": open ? 2 : 0,
+        });
         svg.appendChild(circle);
       }
 
-      // Label text
+      // Label text — open strings: string name drawn by label loop below.
+      // Fretted notes: follow labelMode.
       let label = "";
-      if (labelMode === "noteNames") label = cell.noteName;
-      else if (labelMode === "degrees") label = cell.degreeLabel;
+      if (f > 0) {
+        if (labelMode === "noteNames") label = cell.noteName;
+        else if (labelMode === "degrees") label = cell.degreeLabel;
+      }
 
       if (label) {
         const t = svgEl("text");
@@ -284,7 +282,7 @@ export function renderNeck(
           y: cy + TEXT_V_OFFSET,
           "text-anchor": "middle",
           "font-size": FONT_SIZE_LABEL,
-          fill: C.text,
+          fill: open ? color : C.text,
           "font-family": "sans-serif",
           "font-weight": "bold",
           "pointer-events": "none",
@@ -293,6 +291,28 @@ export function renderNeck(
         svg.appendChild(t);
       }
     }
+  }
+
+  // ── String name labels (at open-string column, inside shape when in scale) ─
+  // Drawn after dots so text sits on top of hollow shapes.
+  for (let s = 0; s < numStrings; s++) {
+    const cell = grid[s][0];
+    const color = cell.inScale
+      ? (cell.isRoot ? C.root : C.scale)
+      : C.stringLabel;
+    const t = svgEl("text");
+    attr(t, {
+      x: mx(fretX(0)),
+      y: stringY(s) + TEXT_V_OFFSET,
+      "text-anchor": "middle",
+      "font-size": FONT_SIZE_STRING,
+      fill: color,
+      "font-family": "sans-serif",
+      "font-weight": cell.inScale ? "bold" : "normal",
+      "pointer-events": "none",
+    });
+    t.textContent = NOTE_NAMES[cell.midi % 12];
+    svg.appendChild(t);
   }
 
   // Replace any existing SVG
