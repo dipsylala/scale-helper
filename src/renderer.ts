@@ -8,6 +8,13 @@ import { Cell, NOTE_NAMES } from "./fretboard";
 import { playNote } from "./audio";
 import { LabelMode } from "./state";
 
+// ── Custom event ──────────────────────────────────────────────────────────────
+export interface NeckPlayDetail {
+  stringIdx: number;
+  fretIdx: number;
+  midi: number;
+}
+
 // ── Layout constants ─────────────────────────────────────────────────────────
 const STRING_SPACING = 28; // px between strings
 const FRET_WIDTH = 48; // px per fret column
@@ -234,6 +241,7 @@ export function renderNeck(
       // Wrap shape + label in a clickable group
       const noteGroup = svgEl("g");
       noteGroup.style.cursor = "pointer";
+      noteGroup.setAttribute("data-note-key", `${s}-${f}`);
 
       // Accessible title for screen readers
       const title = svgEl("title");
@@ -243,162 +251,17 @@ export function renderNeck(
       title.textContent = `${cell.noteName}${rootTag}, ${stringLabel}, ${fretLabel}`;
       noteGroup.appendChild(title);
 
-      noteGroup.addEventListener("click", () => playNote(cell.midi));
+      const dispatchPlay = (): void => {
+        noteGroup.dispatchEvent(
+          new CustomEvent<NeckPlayDetail>("neck:play", {
+            bubbles: true,
+            detail: { stringIdx: s, fretIdx: f, midi: cell.midi },
+          }),
+        );
+      };
+      noteGroup.addEventListener("click", dispatchPlay);
       noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
-      });
-      noteGroup.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          playNote(cell.midi);
-        }
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); dispatchPlay(); }
       });
 
       if (cell.isRoot) {
@@ -484,4 +347,117 @@ export function renderNeck(
   // Replace any existing SVG
   container.innerHTML = "";
   container.appendChild(svg);
+}
+
+// ── Active-note highlight ─────────────────────────────────────────────────────
+
+/**
+ * Highlight the note at the given `"stringIdx-fretIdx"` key, or pass `null`
+ * to clear any existing highlight.  The `.note-active` CSS class applies a
+ * brightness/drop-shadow filter to the note group.
+ */
+export function setActiveNote(container: HTMLElement, key: string | null): void {
+  for (const el of container.querySelectorAll(".note-active")) {
+    el.classList.remove("note-active");
+  }
+  if (key !== null) {
+    container.querySelector(`[data-note-key="${key}"]`)?.classList.add("note-active");
+  }
+}
+
+// ── Neck event listener ──────────────────────────────────────────────────────
+
+/**
+ * Register a single delegated listener on `container` for `"neck:play"`
+ * events.  Any code — click handlers, the run sequencer, keyboard nav — can
+ * dispatch this event and the fretboard will play + highlight the note.
+ *
+ * Call once at app boot; the listener survives re-renders because it is
+ * attached to the container element, not to the SVG inside it.
+ */
+export function mountNeckListener(container: HTMLElement): void {
+  container.addEventListener("neck:play", (e) => {
+    const { midi, stringIdx, fretIdx } = (e as CustomEvent<NeckPlayDetail>).detail;
+    playNote(midi);
+    setActiveNote(container, `${stringIdx}-${fretIdx}`);
+  });
+}
+
+// ── Export ────────────────────────────────────────────────────────────────────
+
+/**
+ * Export the rendered neck as an SVG or PNG download.
+ * CSS custom properties are resolved to their computed values so the file is
+ * self-contained and renders correctly outside the browser DOM.
+ */
+export function exportNeck(
+  container: HTMLElement,
+  format: "svg" | "png",
+  filename: string,
+): void {
+  const srcSvg = container.querySelector("svg");
+  if (!srcSvg) return;
+
+  const clone = srcSvg.cloneNode(true) as SVGSVGElement;
+
+  // Resolve all var(--xxx) presentation-attribute references to actual values.
+  const rootStyle = getComputedStyle(document.documentElement);
+  const varRe = /var\((--[\w-]+)\)/g;
+  const resolveVars = (val: string): string =>
+    val.replace(varRe, (_, name: string) => rootStyle.getPropertyValue(name).trim());
+
+  for (const el of [clone as Element, ...Array.from(clone.querySelectorAll("*"))]) {
+    for (const a of Array.from(el.attributes)) {
+      if (a.value.includes("var(")) {
+        el.setAttribute(a.name, resolveVars(a.value));
+      }
+    }
+  }
+
+  // Prepend a background rect so the export has an opaque background.
+  const bgColor = rootStyle.getPropertyValue("--bg").trim() || "#1a1a2e";
+  const { x: vbX, y: vbY, width: vbW, height: vbH } = clone.viewBox.baseVal;
+  const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  attr(bgRect, { x: vbX, y: vbY, width: vbW, height: vbH, fill: bgColor });
+  clone.insertBefore(bgRect, clone.firstChild);
+
+  const svgStr = new XMLSerializer().serializeToString(clone);
+  const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+  const svgUrl = URL.createObjectURL(svgBlob);
+
+  if (format === "svg") {
+    triggerDownload(svgUrl, `${filename}.svg`);
+    setTimeout(() => URL.revokeObjectURL(svgUrl), 100);
+    return;
+  }
+
+  // PNG: render the SVG onto an offscreen canvas.
+  const pxW = Number(clone.getAttribute("width") || vbW);
+  const pxH = Number(clone.getAttribute("height") || vbH);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = pxW;
+    canvas.height = pxH;
+    canvas.getContext("2d")!.drawImage(img, 0, 0);
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const pngUrl = URL.createObjectURL(blob);
+        triggerDownload(pngUrl, `${filename}.png`);
+        setTimeout(() => URL.revokeObjectURL(pngUrl), 100);
+      }
+      URL.revokeObjectURL(svgUrl);
+    });
+  };
+  img.onerror = () => URL.revokeObjectURL(svgUrl);
+  img.src = svgUrl;
+}
+
+function triggerDownload(url: string, filename: string): void {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

@@ -9,7 +9,6 @@
 - [ ] Mobile-first responsive layout (diagram currently overflows on small screens)
 - [ ] Keyboard navigation for selectors (arrow keys, Enter to select)
 - [ ] Shareable URL with state encoded in query params
-- [ ] Export fretboard as PNG/SVG
 - [ ] Highlight scale patterns (CAGED shapes, 3NPS positions)
 - [ ] Play full scale up/down on click (not just single notes)
 
