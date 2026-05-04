@@ -31,7 +31,7 @@ note names.
 1. As a learner, I want a segmented toggle to select the number of strings (3–8),
    so that the neck diagram matches my instrument. Switching string count selects
    the first available tuning for that count.
-2. As a learner, I want a dropdown to select a tuning, so that the neck reflects
+2. As a learner, I want a button group to select a tuning, so that the neck reflects
    the actual open-string pitches of my guitar.
 3. As a learner, I want a button grid to select a scale (e.g. Major, Minor, Blues),
    so that I can explore different tonalities.
@@ -55,8 +55,8 @@ note names.
 10. As a learner, I want open strings (fret 0) to be shown to the left of the nut,
     so that I can include open-position notes in my practice.
 11. As a learner, I want standard fret position markers (single dots at frets 3, 5,
-    7, 9, 15, 17, 19; double dots at frets 12 and 21) rendered below the lowest
-    string, so that I can orient myself on the neck.
+    7, 9, 15, 17, 19, 21; double dots at frets 12 and 24) rendered at the vertical
+    midpoint of the neck, so that I can orient myself on the neck.
 12. As a learner, I want fret numbers displayed at the top of the diagram, so that
     I can identify fret positions at a glance.
 13. As a learner, I want string names (the open-string note name) displayed at the
@@ -198,8 +198,9 @@ note names.
 12. Open strings (fret 0) are displayed as a column to the left of the nut line.
 13. Fret numbers are shown above each fret column (1, 2, 3 … N).
 14. String names are shown to the left of the open-string column.
-15. Standard fretboard position markers appear below the neck at frets 3, 5, 7, 9,
-    15, 17, 19, 21 (single dot) and 12, 24 (double dot), subject to the fret count.
+15. Standard fretboard position markers appear at the vertical midpoint of the neck
+    at frets 3, 5, 7, 9, 15, 17, 19, 21 (single dot) and 12, 24 (double dot),
+    subject to the fret count.
 16. For E Major (root E, Major scale, Standard tuning), fret 0 string 6 is
     highlighted as the root and fret 0 string 1 is highlighted as the root.
 17. For E Major, exactly the notes E, F#, G#, A, B, C#, D# are highlighted across
@@ -350,6 +351,20 @@ note names.
   and gain decay envelope (~1.6s decay).
 - Invoked when a user clicks a scale note dot on the fretboard.
 
+#### `controls.ts` — Control Bar
+- Exports `mountSettings(container, state, onChange)` (top bar: Strings, Frets,
+  Labels, Handed toggles) and `mountSelectors(container, state, onChange,
+  scaleMemory)` (below fretboard: Root, Scale, Tuning).
+- Both functions rebuild the DOM on every call; `onChange` is called with the
+  updated full `AppState` on any control change.
+- Exports the `ScaleMemory` interface (`remember(scale)` / `recall(category)`).
+  `main.ts` creates a `ScaleMemory` instance via `createScaleMemory()` (a closure
+  over a per-category last-selected map) and passes it into `mountSelectors` so
+  that switching the Common/Exotic filter returns the user to the scale they were
+  last on in that category.
+- All toggle groups use `aria-pressed` and `role="group"`; note buttons include
+  `aria-label` attributes for screen reader accessibility.
+
 #### `state.ts` — Shared State Types
 - Exports the `AppState` interface and `LabelMode` type union.
 - Uses `import type` for `Tuning` and `Scale` — erased at compile time, zero runtime dependency.
@@ -393,29 +408,34 @@ note names.
 
 ---
 
-## Testing Decisions
+## Testing
 
-Good tests verify **observable behaviour through the public interface**, not internal
-implementation. They do not import private helpers or test intermediate state.
+**Framework**: [Vitest](https://vitest.dev/) — shares `vite.config.ts` directly,
+so TypeScript and ESM work with zero extra config.
 
-### Modules to test
+```
+npm test          # single run
+npm run test:watch  # interactive watch mode
+```
 
-- **`scales.ts`**: given a root and a scale name, `getScaleNotes` returns the
-  correct set of pitch-classes; `getDegreeLabel` returns correct labels for every
-  interval in every scale.
-- **`tunings.ts`**: `getNoteAtFret` returns correct MIDI values for several
-  string/fret pairs across each tuning; open strings match the spec table above.
-- **`fretboard.ts`**: for a known root, scale, and tuning, the 2D grid contains the
-  correct `inScale`, `isRoot`, `noteName`, and `degreeLabel` values at specific
-  positions. Spot-check: E Major Standard tuning, fret 0 string 6 → root; fret 2
-  string 6 → F# in scale, degree "2".
+Tests live alongside their source files as `src/*.test.ts` and run in a Node
+environment (no DOM needed for the modules under test).
 
-### What makes a good test here
+### Test files
+
+| File | Tests | What's covered |
+|---|---|---|
+| `src/scales.test.ts` | 15 | Registry invariants; `getScaleNotes` (all roots, wrap-around); `getDegreeLabel` (correct labels, out-of-scale → `""`, negative offset wrap) |
+| `src/tunings.test.ts` | 13 | Registry invariants (ascending strings, no duplicate names); `AVAILABLE_STRING_COUNTS`; `getTuningsForStringCount`; `getNoteAtFret` |
+| `src/fretboard.test.ts` | 14 | Grid shape; MIDI / pitchClass / noteName accuracy; `inScale` / `isRoot` correctness for C major and A pentatonic minor; `degreeLabel` content |
+| `src/persistence.test.ts` | 16 | Full round-trip save/load; empty storage; invalid JSON; unknown tuning/scale/labelMode; out-of-range root/fretCount; theme save/load |
+
+### Principles
 
 - Test at the module boundary (exported functions), not internal helpers.
 - Use concrete expected values from the interval table in this spec — they are the
   ground truth.
-- Tests should not import the renderer or touch the DOM.
+- Tests must not import the renderer or touch the DOM.
 
 ---
 
@@ -441,6 +461,6 @@ implementation. They do not import private helpers or test intermediate state.
   selected fret count is ≥ that fret number.
 - The degree label for an interval should follow common theory notation:
   unaltered degrees are plain numbers ("1", "2", "3"…); flattened degrees use a
-  "b" prefix ("b3", "b7"); raised degrees use "#" ("4#" → Lydian raised fourth).
+  "b" prefix ("b3", "b7"); raised degrees use a "#" prefix ("#4" → Lydian raised fourth).
   For pentatonic/blues scales the missing diatonic degrees are simply absent (no
   label shown for those frets, as they are not in the scale).
