@@ -82,6 +82,14 @@ export function renderNeck(
     PADDING_LEFT + OPEN_COL_WIDTH + NUT_WIDTH + fretCount * FRET_WIDTH + NECK_EXTRA_RIGHT;
   const totalHeight = PADDING_TOP + (numStrings - 1) * STRING_SPACING + PADDING_BOTTOM;
 
+  // In left-handed mode the layout is mirrored, so PADDING_LEFT (string-label
+  // area, 36 px) ends up on the right and NECK_EXTRA_RIGHT (16 px) on the left.
+  // We add a full PADDING_LEFT worth of extra space on the left and shift the
+  // viewBox origin left by the same amount so the neck sits at the same visual
+  // margin as in right-handed mode — no coordinate changes needed elsewhere.
+  const lhPad = leftHanded ? PADDING_LEFT : 0;
+  const svgWidth = totalWidth + lhPad;
+
   // Mirror x coordinate for left-handed layout
   const mx = (x: number): number => (leftHanded ? totalWidth - x : x);
   // Mirror the left edge of a rect (its right edge becomes the mirrored left edge)
@@ -89,9 +97,9 @@ export function renderNeck(
 
   const svg = svgEl("svg");
   attr(svg, {
-    width: totalWidth,
+    width: svgWidth,
     height: totalHeight,
-    viewBox: `0 0 ${totalWidth} ${totalHeight}`,
+    viewBox: `${-lhPad} 0 ${svgWidth} ${totalHeight}`,
     "aria-label": "Guitar fretboard diagram",
   });
 
