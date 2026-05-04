@@ -6,7 +6,8 @@
 
 import { TUNINGS, Tuning } from "./tunings";
 import { SCALES, Scale } from "./scales";
-import { LabelMode } from "./renderer";
+
+export type LabelMode = "dots" | "noteNames" | "degrees";
 
 export interface AppState {
   tuning: Tuning;

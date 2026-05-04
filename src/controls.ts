@@ -8,8 +8,7 @@
 import { AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
 import { SCALES } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
-import { LabelMode } from "./renderer";
-import { AppState } from "./state";
+import { AppState, LabelMode } from "./state";
 
 export type { AppState } from "./state";
 export { DEFAULT_STATE } from "./state";
@@ -148,8 +147,8 @@ export function mountSelectors(
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function makeLabel(text: string): HTMLLabelElement {
-  const el = document.createElement("label");
+function makeLabel(text: string): HTMLSpanElement {
+  const el = document.createElement("span");
   el.textContent = text;
   return el;
 }

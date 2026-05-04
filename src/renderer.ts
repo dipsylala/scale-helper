@@ -5,8 +5,10 @@
 // ---------------------------------------------------------------------------
 
 import { Cell, NOTE_NAMES } from "./fretboard";
+import { playNote } from "./audio";
+import { LabelMode } from "./state";
 
-export type LabelMode = "dots" | "noteNames" | "degrees";
+export type { LabelMode };
 
 // ── Layout constants ─────────────────────────────────────────────────────────
 const STRING_SPACING = 28;       // px between strings
@@ -111,9 +113,6 @@ export function renderNeck(
   const mx  = (x: number): number => leftHanded ? totalWidth - x : x;
   // Mirror the left edge of a rect (its right edge becomes the mirrored left edge)
   const mrx = (x: number, w: number): number => leftHanded ? totalWidth - x - w : x;
-  // Flip text-anchor horizontally
-  const ta  = (anchor: "start" | "end" | "middle"): string =>
-    leftHanded && anchor !== "middle" ? (anchor === "start" ? "end" : "start") : anchor;
 
   const svg = svgEl("svg");
   attr(svg, {
@@ -235,10 +234,16 @@ export function renderNeck(
       const cx = mx(fretX(f));
       const cy = stringY(s);
       const color = cell.isRoot ? C.root : C.scale;
-      // Open strings (fret 0) are hollow; fretted notes are filled
+      // Open strings (fret 0) are hollow; fretted notes are filled.
+      // "transparent" rather than "none" so the interior is still a click target.
       const open = f === 0;
-      const dotFill   = open ? "none" : color;
+      const dotFill   = open ? "transparent" : color;
       const dotStroke = color;
+
+      // Wrap shape + label in a clickable group
+      const noteGroup = svgEl("g");
+      noteGroup.style.cursor = "pointer";
+      noteGroup.addEventListener("click", () => playNote(cell.midi));
 
       if (cell.isRoot) {
         // Root: diamond (rotated square)
@@ -255,7 +260,7 @@ export function renderNeck(
           "stroke-width": open ? 2 : 0,
           transform: `rotate(45 ${cx} ${cy})`,
         });
-        svg.appendChild(diamond);
+        noteGroup.appendChild(diamond);
       } else {
         const circle = svgEl("circle");
         attr(circle, {
@@ -264,7 +269,7 @@ export function renderNeck(
           stroke: dotStroke,
           "stroke-width": open ? 2 : 0,
         });
-        svg.appendChild(circle);
+        noteGroup.appendChild(circle);
       }
 
       // Label text — open strings: string name drawn by label loop below.
@@ -282,19 +287,23 @@ export function renderNeck(
           y: cy + TEXT_V_OFFSET,
           "text-anchor": "middle",
           "font-size": FONT_SIZE_LABEL,
-          fill: open ? color : C.text,
+          fill: C.text,
           "font-family": "sans-serif",
           "font-weight": "bold",
           "pointer-events": "none",
         });
         t.textContent = label;
-        svg.appendChild(t);
+        noteGroup.appendChild(t);
       }
+
+      svg.appendChild(noteGroup);
     }
   }
 
   // ── String name labels (at open-string column, inside shape when in scale) ─
   // Drawn after dots so text sits on top of hollow shapes.
+  // For in-scale open strings the noteGroup below handles the click;
+  // for out-of-scale open strings we add a transparent hit circle here.
   for (let s = 0; s < numStrings; s++) {
     const cell = grid[s][0];
     const color = cell.inScale
@@ -312,7 +321,10 @@ export function renderNeck(
       "pointer-events": "none",
     });
     t.textContent = NOTE_NAMES[cell.midi % 12];
-    svg.appendChild(t);
+
+    if (cell.inScale) {
+      svg.appendChild(t);
+    }
   }
 
   // Replace any existing SVG
