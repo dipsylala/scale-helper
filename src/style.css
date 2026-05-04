@@ -102,6 +102,21 @@ header h1 {
   padding: 16px 20px;
 }
 
+/* ── Selector group fieldsets ───────────────────────────────────────────── */
+fieldset.selector-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+fieldset.selector-group > legend {
+  padding: 0 0 4px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* ── Root row: 12 equal-width buttons ───────────────────────────────────── */
 .root-row {
   display: grid;
@@ -179,22 +194,6 @@ header h1 {
 }
 
 /* ── Button groups (tuning) ──────────────────────────────────────────────── */
-.btn-group-wrap {
-  display: grid;
-  grid-template-columns: 64px 1fr;
-  align-items: start;
-  gap: 8px;
-}
-
-.btn-group-label {
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  padding-top: 5px;
-}
-
 .btn-group {
   display: flex;
   flex-wrap: wrap;

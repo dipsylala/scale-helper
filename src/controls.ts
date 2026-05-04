@@ -82,6 +82,11 @@ export function mountSelectors(
   container.innerHTML = "";
 
   // ── Root (full-width equal-width buttons) ─────────────────────────────────
+  const rootFieldset = document.createElement("fieldset");
+  rootFieldset.className = "selector-group";
+  const rootLegend = document.createElement("legend");
+  rootLegend.textContent = "Root";
+  rootFieldset.appendChild(rootLegend);
   const rootRow = document.createElement("div");
   rootRow.className = "root-row";
   for (const name of NOTE_NAMES) {
@@ -93,7 +98,8 @@ export function mountSelectors(
     );
     rootRow.appendChild(btn);
   }
-  container.appendChild(rootRow);
+  rootFieldset.appendChild(rootRow);
+  container.appendChild(rootFieldset);
 
   // ── Scale (grid + Common/Exotic filter) ───────────────────────────────────
   const isExotic = state.scale.category === "exotic";
@@ -101,8 +107,11 @@ export function mountSelectors(
   const defaultExotic = SCALES.find((s) => s.category === "exotic")!;
   const defaultCommon = SCALES.find((s) => s.category === "common")!;
 
-  const scaleSection = document.createElement("div");
-  scaleSection.className = "scale-section";
+  const scaleSection = document.createElement("fieldset");
+  scaleSection.className = "selector-group scale-section";
+  const scaleLegend = document.createElement("legend");
+  scaleLegend.textContent = "Scale";
+  scaleSection.appendChild(scaleLegend);
 
   const scaleGrid = document.createElement("div");
   scaleGrid.className = "scale-grid";
@@ -169,13 +178,12 @@ function makeButtonGroup(
   onSelect: (value: string) => void,
   label: string,
 ): HTMLElement {
-  const wrap = document.createElement("div");
-  wrap.className = "btn-group-wrap";
+  const fieldset = document.createElement("fieldset");
+  fieldset.className = "selector-group";
 
-  const heading = document.createElement("span");
-  heading.className = "btn-group-label";
-  heading.textContent = label;
-  wrap.appendChild(heading);
+  const legend = document.createElement("legend");
+  legend.textContent = label;
+  fieldset.appendChild(legend);
 
   const group = document.createElement("div");
   group.className = "btn-group";
@@ -186,6 +194,6 @@ function makeButtonGroup(
     btn.addEventListener("click", () => onSelect(name));
     group.appendChild(btn);
   }
-  wrap.appendChild(group);
-  return wrap;
+  fieldset.appendChild(group);
+  return fieldset;
 }
