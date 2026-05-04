@@ -8,6 +8,7 @@ import { AppState } from "./state";
 import { buildFretboard, NOTE_NAMES } from "./fretboard";
 import { renderNeck, exportNeck, mountNeckListener } from "./renderer";
 import { saveState, loadState, saveTheme, loadTheme } from "./persistence";
+import { hasURLParams, paramsToState, syncURLToState } from "./url";
 import { TUNINGS } from "./tunings";
 import { SCALES, Scale } from "./scales";
 
@@ -56,12 +57,15 @@ themeBtn.addEventListener("click", () => {
   // No re-render needed.
 });
 
-let state: AppState = loadState(DEFAULT_STATE);
+let state: AppState = hasURLParams()
+  ? paramsToState(new URLSearchParams(window.location.search), DEFAULT_STATE)
+  : loadState(DEFAULT_STATE);
 const scaleMemory = createScaleMemory();
 
 function render(s: AppState, save = true): void {
   state = s;
   if (save) saveState(s);
+  syncURLToState(s);
   const grid = buildFretboard(state.tuning, state.scale, state.root, state.fretCount);
   renderNeck(neckEl, grid, state.labelMode, state.fretCount, state.handedness === "left");
   mountSettings(settingsEl, state, render);
