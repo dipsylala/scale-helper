@@ -3,7 +3,8 @@
 // Wires controls → fretboard model → renderer.
 // ---------------------------------------------------------------------------
 
-import { mountSettings, mountSelectors, AppState } from "./controls";
+import { mountSettings, mountSelectors } from "./controls";
+import { AppState } from "./state";
 import { buildFretboard } from "./fretboard";
 import { renderNeck, getPalette } from "./renderer";
 import { saveState, loadState, saveTheme, loadTheme } from "./persistence";
@@ -24,17 +25,20 @@ themeBtn.addEventListener("click", () => {
   document.documentElement.dataset["theme"] = theme;
   themeBtn.textContent = theme === "light" ? "☀️" : "🌙";
   saveTheme(theme);
-  render(state); // re-render SVG with new palette
+  renderNeckOnly(); // only the SVG palette changes; controls don't need remounting
 });
 
 let state: AppState = loadState();
 
+function renderNeckOnly(): void {
+  const grid = buildFretboard(state.tuning, state.scale, state.root, state.fretCount);
+  renderNeck(neckEl, grid, state.labelMode, state.fretCount, getPalette(theme), state.handedness === "left");
+}
+
 function render(s: AppState): void {
   state = s;
   saveState(s);
-  const grid = buildFretboard(s.tuning, s.scale, s.root, s.fretCount);
-  // palette is passed explicitly so renderNeck has no hidden DOM dependency
-  renderNeck(neckEl, grid, s.labelMode, s.fretCount, getPalette(theme), s.handedness === "left");
+  renderNeckOnly();
   mountSettings(settingsEl, state, render);
   mountSelectors(selectorsEl, state, render);
 }

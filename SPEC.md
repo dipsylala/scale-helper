@@ -93,8 +93,8 @@ note names.
 
 ## Acceptance Criteria
 
-1. The control bar contains exactly five controls in order: **Tuning**, **Scale**,
-   **Root**, **Frets**, and **Labels**.
+1. The settings bar contains controls for: **Strings**, **Frets**, **Labels**, and **Handed**.
+   The selectors panel (below the fretboard) contains: **Scale** (with Common/Exotic filter toggle), **Root** (12 buttons), and **Tuning**.
 2. The **Tuning** dropdown offers the following options, grouped by category
    (display name → open strings low-to-high):
 
@@ -139,8 +139,9 @@ note names.
     the default theme is dark.
 20. All UI colours (background, text, controls, neck) update immediately when the
     theme changes, via CSS custom properties on `<html data-theme>`.
-8. The neck diagram is drawn horizontally; string 1 (highest pitch) is at the top,
-   string 6 (lowest pitch) is at the bottom.
+8. The neck diagram is drawn horizontally; the lowest-pitched string is at the
+   bottom, the highest-pitched string is at the top, consistent with standard
+   guitar tablature.
 9. Open strings (fret 0) are displayed as a column to the left of the nut line.
 10. Fret numbers are shown above each fret column (1, 2, 3 … N).
 11. String names are shown to the left of the open-string column.
@@ -165,9 +166,12 @@ note names.
 ### Modules
 
 #### `scales.ts` — Scale Registry (deep module)
-- Defines each scale as a `{ name: string; degrees: number[] }` object where
+- Defines each scale as a `{ name: string; category: "common" | "exotic"; degrees: number[] }` object where
   `degrees` is an array of semitone offsets from the root (0–11), sorted ascending,
   always starting with 0.
+- `category` is `"common"` for widely-used guitar scales (pentatonics, modes, blues)
+  and `"exotic"` for advanced/shred/world scales. Controls use this to filter the
+  scale grid rather than relying on a fragile index boundary.
 - Exports a `SCALES` constant (ordered list) and a `getScaleNotes(root: number,
   scale: Scale): Set<number>` helper that returns the set of MIDI pitch-classes
   (mod 12) in the scale.
@@ -203,11 +207,13 @@ note names.
 
 #### `tunings.ts` — Tuning Registry (deep module)
 - Defines each tuning as `{ name: string; strings: number[] }` where `strings` is
-  an array of 6 MIDI note numbers, ordered **low string first** (string 6 → string
-  1), matching the neck's bottom-to-top visual order.
-- Exports a `TUNINGS` constant and a `getNoteAtFret(openMidi: number, fret: number):
-  number` helper (simply `openMidi + fret`).
-- Purely functional; fully unit-testable.
+  an array of MIDI note numbers of length 3–8, ordered **low string first**,
+  matching the neck's bottom-to-top visual order.
+- Exports a `TUNINGS` constant (all tunings), `AVAILABLE_STRING_COUNTS` (derived
+  from data), `getTuningsForStringCount(n)`, and a `getNoteAtFret(openMidi, fret)
+  => openMidi + fret` helper.
+- 33 tunings spanning 3–8 strings: standard 6-string variants, drop/open/modal,
+  7- and 8-string electric, 4- and 5-string bass, and 3- and 4-string cigar box.
 
 **MIDI values for open strings (middle C = 60, low E standard = 40):**
 
@@ -254,11 +260,18 @@ note names.
   (blue); non-scale positions are empty.
 - Re-renders by replacing the SVG element.
 
-#### `controls.ts` — Control Bar
-- Builds and mounts the top control bar into a given DOM node.
-- Fires a `change` callback with the new full configuration state whenever any
-  control changes.
-- Encapsulates all DOM event handling.
+#### `state.ts` — Shared State Types
+- Exports the `AppState` interface and `DEFAULT_STATE` constant.
+- Imported by `controls.ts`, `persistence.ts`, and `main.ts` so the type
+  definition has a single authoritative home.
+
+#### `controls.ts` — Settings Bar & Selectors Panel
+- `mountSettings(el, state, onChange)`: mounts the top bar (Strings toggle,
+  Frets input, Labels toggle, Handed toggle).
+- `mountSelectors(el, state, onChange)`: mounts the below-fretboard panel
+  (Scale grid with Common/Exotic filter, Root 12-button row, Tuning button group).
+- Fires `onChange` with the full new `AppState` whenever any control changes.
+- Imports `AppState` from `state.ts`.
 
 #### `persistence.ts` — State & Theme Persistence
 - Saves and restores `AppState` and the active theme via `localStorage`.
@@ -273,8 +286,10 @@ note names.
 - Instantiates controls, renderer, and persistence.
 - Holds application state (`AppState`) and current theme (`"dark" | "light"`).
 - Restores state and theme from `localStorage` on boot.
-- On any control change: saves state, recomputes the fretboard model, re-renders
-  the neck with the current palette.
+- On a control change: saves state, recomputes the fretboard model, re-renders
+  the neck with the current palette, and remounts controls to reflect new state.
+- On theme toggle: only re-renders the SVG neck (controls don't need remounting
+  since theme is not part of `AppState`).
 - Owns the dark/light mode toggle button and updates the `data-theme` attribute
   on `<html>` so CSS variables switch instantly.
 
@@ -324,8 +339,6 @@ implementation. They do not import private helpers or test intermediate state.
 
 ## Out of Scope (v1)
 
-- Left-handed / mirrored neck layout
-- Bass guitar (4- or 5-string necks)
 - Custom / user-defined tunings
 - Custom / user-defined scales
 - Capo support

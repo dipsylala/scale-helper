@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // renderer.ts — SVG neck renderer
 // Renders the guitar neck as an SVG element and mounts it into a container.
-// String 0 (lowest pitch) is drawn at the BOTTOM; string 5 (highest) at TOP.
+// String 0 (lowest pitch) is drawn at the BOTTOM; string N-1 (highest) at TOP.
 // ---------------------------------------------------------------------------
 
 import { Cell, NOTE_NAMES } from "./fretboard";
@@ -14,7 +14,7 @@ const FRET_WIDTH = 48;           // px per fret column
 const OPEN_COL_WIDTH = 44;       // px for the open-string (fret 0) column
 const NUT_WIDTH = 6;             // px width of the nut bar
 const PADDING_TOP = 28;          // space above highest string (fret numbers)
-const PADDING_BOTTOM = 36;       // space below lowest string (position markers)
+const PADDING_BOTTOM = 16;       // space below lowest string
 const PADDING_LEFT = 36;         // space left of open column (string labels)
 const NECK_EXTRA_RIGHT = 16;     // px past the last fret line to close off the neck
 const NECK_V_BLEED = 4;          // px the neck background extends beyond the outer strings

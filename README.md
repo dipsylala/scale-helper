@@ -14,11 +14,13 @@ All selections are remembered between sessions via `localStorage`.
 
 | Control | Description |
 |---|---|
-| **Tuning** | 14 tunings: standard, drop, open, and modal variants |
+| **Strings** | Number of strings (3–8) — switches to the first tuning for that string count |
+| **Tuning** | 33 tunings across 3–8 strings: standard, drop, open, modal, bass, and cigar box variants |
 | **Scale** | 21 scales: common modes, pentatonics, blues, and exotic/shred scales |
 | **Root** | Chromatic root note (C–B, sharps) |
 | **Frets** | Number of frets to display (12–24, default 21) |
 | **Labels** | Dots only / Note names / Scale degrees |
+| **Handed** | Right-handed (normal) or left-handed (mirrored neck) |
 | **🌙 / ☀️** | Toggle dark/light mode |
 
 ## Running locally
@@ -48,11 +50,12 @@ To enable this on a fresh fork: **Settings → Pages → Source → GitHub Actio
 
 ```
 src/
-  scales.ts       Scale registry — interval arrays, degree labels
-  tunings.ts      Tuning registry — MIDI open-string values
+  state.ts        AppState interface and DEFAULT_STATE
+  scales.ts       Scale registry — interval arrays, degree labels, categories
+  tunings.ts      Tuning registry — MIDI open-string values, 3–8 strings
   fretboard.ts    Builds the 2-D Cell grid from tuning + scale + root
   renderer.ts     Renders the fretboard as an SVG element
-  controls.ts     Builds the control bar, fires onChange callbacks
+  controls.ts     Builds the settings bar and selectors, fires onChange callbacks
   persistence.ts  Saves/restores state and theme via localStorage
   main.ts         Application entry point — wires everything together
   style.css       CSS custom-property theming (dark + light)

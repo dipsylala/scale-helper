@@ -5,31 +5,14 @@
 // Both fire onChange with the full AppState whenever any value changes.
 // ---------------------------------------------------------------------------
 
-import { TUNINGS, Tuning, AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
-import { SCALES, Scale } from "./scales";
+import { AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
+import { SCALES } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
 import { LabelMode } from "./renderer";
+import { AppState } from "./state";
 
-export interface AppState {
-  tuning: Tuning;
-  scale: Scale;
-  root: number;       // pitch-class 0–11
-  fretCount: number;
-  labelMode: LabelMode;
-  handedness: "right" | "left";
-}
-
-export const DEFAULT_STATE: AppState = {
-  tuning: TUNINGS[0],
-  scale: SCALES[0],
-  root: 0,            // C
-  fretCount: 21,
-  labelMode: "dots",
-  handedness: "right",
-};
-
-// Split index in SCALES where exotic scales begin
-const EXOTIC_START = SCALES.findIndex((s) => s.name === "Phrygian Dominant");
+export type { AppState } from "./state";
+export { DEFAULT_STATE } from "./state";
 
 // ── Top bar: settings that don't change often ─────────────────────────────────
 export function mountSettings(
@@ -39,19 +22,17 @@ export function mountSettings(
 ): void {
   container.innerHTML = "";
 
-  // ── Strings ───────────────────────────────────────────────────────────────
+  // ── Strings (segmented toggle) ───────────────────────────────────────────────────
   const currentStringCount = state.tuning.strings.length;
   container.appendChild(makeLabel("Strings"));
-  const stringCountSelect = makeSelect(
-    AVAILABLE_STRING_COUNTS.map((n) => String(n)),
-    AVAILABLE_STRING_COUNTS.indexOf(currentStringCount),
-  );
-  stringCountSelect.addEventListener("change", () => {
-    const count = AVAILABLE_STRING_COUNTS[stringCountSelect.selectedIndex];
-    const newTuning = getTuningsForStringCount(count)[0];
-    onChange({ ...state, tuning: newTuning });
-  });
-  container.appendChild(stringCountSelect);
+  container.appendChild(makeToggleGroup(
+    AVAILABLE_STRING_COUNTS.map((n) => ({ value: String(n), text: String(n) })),
+    String(currentStringCount),
+    (v) => {
+      const newTuning = getTuningsForStringCount(Number(v))[0];
+      onChange({ ...state, tuning: newTuning });
+    },
+  ));
 
   // ── Frets ─────────────────────────────────────────────────────────────────
   container.appendChild(makeLabel("Frets"));
@@ -115,8 +96,10 @@ export function mountSelectors(
   container.appendChild(rootRow);
 
   // ── Scale (grid + Common/Exotic filter) ───────────────────────────────────
-  const isExotic = SCALES.indexOf(state.scale) >= EXOTIC_START;
-  const visibleScales = isExotic ? SCALES.slice(EXOTIC_START) : SCALES.slice(0, EXOTIC_START);
+  const isExotic = state.scale.category === "exotic";
+  const visibleScales = SCALES.filter((s) => s.category === (isExotic ? "exotic" : "common"));
+  const defaultExotic = SCALES.find((s) => s.category === "exotic")!;
+  const defaultCommon = SCALES.find((s) => s.category === "common")!;
 
   const scaleSection = document.createElement("div");
   scaleSection.className = "scale-section";
@@ -135,7 +118,7 @@ export function mountSelectors(
   const filterToggle = makeToggleGroup(
     [{ value: "common", text: "Common" }, { value: "exotic", text: "Exotic" }],
     isExotic ? "exotic" : "common",
-    (v) => onChange({ ...state, scale: v === "exotic" ? SCALES[EXOTIC_START] : SCALES[0] }),
+    (v) => onChange({ ...state, scale: v === "exotic" ? defaultExotic : defaultCommon }),
   );
   filterToggle.classList.add("scale-filter");
   scaleSection.appendChild(filterToggle);
@@ -160,18 +143,6 @@ function makeLabel(text: string): HTMLLabelElement {
   const el = document.createElement("label");
   el.textContent = text;
   return el;
-}
-
-function makeSelect(options: string[], selectedIndex: number): HTMLSelectElement {
-  const sel = document.createElement("select");
-  for (const [i, name] of options.entries()) {
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = name;
-    if (i === selectedIndex) opt.selected = true;
-    sel.appendChild(opt);
-  }
-  return sel;
 }
 
 function makeToggleGroup(

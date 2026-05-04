@@ -5,7 +5,7 @@
 
 import { TUNINGS } from "./tunings";
 import { SCALES } from "./scales";
-import { AppState, DEFAULT_STATE } from "./controls";
+import { AppState, DEFAULT_STATE } from "./state";
 import { LabelMode } from "./renderer";
 
 const STORAGE_KEY = "scaleHelperState";
