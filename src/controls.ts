@@ -4,7 +4,7 @@
 // an onChange callback with the current AppState whenever any value changes.
 // ---------------------------------------------------------------------------
 
-import { TUNINGS, Tuning } from "./tunings";
+import { TUNINGS, Tuning, AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
 import { SCALES, Scale } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
 import { LabelMode } from "./renderer";
@@ -32,14 +32,29 @@ export function mountControls(
 ): void {
   container.innerHTML = "";
 
+  // ── Strings ───────────────────────────────────────────────────────────────
+  const currentStringCount = state.tuning.strings.length;
+  container.appendChild(makeLabel("Strings"));
+  const stringCountSelect = makeSelect(
+    AVAILABLE_STRING_COUNTS.map((n) => String(n)),
+    AVAILABLE_STRING_COUNTS.indexOf(currentStringCount),
+  );
+  stringCountSelect.addEventListener("change", () => {
+    const count = AVAILABLE_STRING_COUNTS[stringCountSelect.selectedIndex];
+    const newTuning = getTuningsForStringCount(count)[0];
+    onChange({ ...state, tuning: newTuning });
+  });
+  container.appendChild(stringCountSelect);
+
   // ── Tuning ────────────────────────────────────────────────────────────────
+  const filteredTunings = getTuningsForStringCount(currentStringCount);
   container.appendChild(makeLabel("Tuning"));
   const tuningSelect = makeSelect(
-    TUNINGS.map((t) => t.name),
-    TUNINGS.indexOf(state.tuning),
+    filteredTunings.map((t) => t.name),
+    filteredTunings.indexOf(state.tuning),
   );
   tuningSelect.addEventListener("change", () => {
-    onChange({ ...state, tuning: TUNINGS[tuningSelect.selectedIndex] });
+    onChange({ ...state, tuning: filteredTunings[tuningSelect.selectedIndex] });
   });
   container.appendChild(tuningSelect);
 
