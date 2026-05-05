@@ -24,6 +24,7 @@ const DEFAULT_STATE: AppState = {
   fretCount: 21,
   labelMode: "dots",
   handedness: "right",
+  scaleRunBpm: 120,
 };
 
 const ALT_STATE: AppState = {
@@ -33,6 +34,7 @@ const ALT_STATE: AppState = {
   fretCount: 15,
   labelMode: "degrees",
   handedness: "left",
+  scaleRunBpm: 90,
 };
 
 beforeEach(() => localStorageMock.clear());
