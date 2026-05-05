@@ -17,7 +17,7 @@ export const SCALES: readonly Scale[] = [
   // ── Pentatonic & Blues ─────────────────────────────────────────────────────
   { name: "Pentatonic Minor", group: "Pentatonic & Blues", degrees: [0, 3, 5, 7, 10] },
   { name: "Pentatonic Major", group: "Pentatonic & Blues", degrees: [0, 2, 4, 7, 9] },
-  { name: "Blues", group: "Pentatonic & Blues", degrees: [0, 3, 5, 6, 7, 10] },
+  { name: "Minor Blues", group: "Pentatonic & Blues", degrees: [0, 3, 5, 6, 7, 10] },
 
   // ── Major & Minor ──────────────────────────────────────────────────────────
   { name: "Major (Ionian)", group: "Major & Minor", degrees: [0, 2, 4, 5, 7, 9, 11] },
@@ -25,20 +25,20 @@ export const SCALES: readonly Scale[] = [
   { name: "Harmonic Minor", group: "Major & Minor", degrees: [0, 2, 3, 5, 7, 8, 11] },
   { name: "Melodic Minor", group: "Major & Minor", degrees: [0, 2, 3, 5, 7, 9, 11] },
 
-  // ── Modes ──────────────────────────────────────────────────────────────────
+  // ── Diatonic Modes ──────────────────────────────────────────────────────────────────
   { name: "Dorian", group: "Modes", degrees: [0, 2, 3, 5, 7, 9, 10] },
   { name: "Phrygian", group: "Modes", degrees: [0, 1, 3, 5, 7, 8, 10] },
   { name: "Lydian", group: "Modes", degrees: [0, 2, 4, 6, 7, 9, 11] },
   { name: "Mixolydian", group: "Modes", degrees: [0, 2, 4, 5, 7, 9, 10] },
   { name: "Locrian", group: "Modes", degrees: [0, 1, 3, 5, 6, 8, 10] },
 
-  // ── Extended Modes ─────────────────────────────────────────────────────────
+  // ── Harmonic & Melodic Minor Modes ─────────────────────────────────────────
   // Phrygian Dominant — mode 5 of Harmonic Minor (1 b2 3 4 5 b6 b7)
-  { name: "Phrygian Dominant", group: "Extended Modes", degrees: [0, 1, 4, 5, 7, 8, 10] },
+  { name: "Phrygian Dominant", group: "Harmonic & Melodic Minor Modes", degrees: [0, 1, 4, 5, 7, 8, 10] },
   // Lydian Dominant — mode 4 of Melodic Minor (1 2 3 #4 5 6 b7)
-  { name: "Lydian Dominant", group: "Extended Modes", degrees: [0, 2, 4, 6, 7, 9, 10] },
+  { name: "Lydian Dominant", group: "Harmonic & Melodic Minor Modes", degrees: [0, 2, 4, 6, 7, 9, 10] },
   // Super Locrian (Altered) — mode 7 of Melodic Minor (1 b2 b3 b4 b5 b6 b7)
-  { name: "Super Locrian (Altered)", group: "Extended Modes", degrees: [0, 1, 3, 4, 6, 8, 10] },
+  { name: "Super Locrian (Altered)", group: "Harmonic & Melodic Minor Modes", degrees: [0, 1, 3, 4, 6, 8, 10] },
 
   // ── Symmetric ─────────────────────────────────────────────────────────────
   // Whole Tone — fully symmetrical 6-note scale (1 2 3 #4 #5 b7)
@@ -48,10 +48,10 @@ export const SCALES: readonly Scale[] = [
   // Diminished Whole-Half — 8-note symmetrical (W H W H W H W H)
   { name: "Diminished (Whole-Half)", group: "Symmetric", degrees: [0, 2, 3, 5, 6, 8, 9, 11] },
 
-  // ── World ──────────────────────────────────────────────────────────────────
+  // ── Additional Heptatonic Scales───────────────────────────────────────────────────
   // Double Harmonic Major (Byzantine) — (1 b2 3 4 5 b6 7)
   { name: "Double Harmonic Major", group: "Additional Heptatonic Scales", degrees: [0, 1, 4, 5, 7, 8, 11] },
-  // Hungarian Minor (Gypsy Minor) — (1 2 b3 #4 5 b6 7)
+  // Hungarian Minor — (1 2 b3 #4 5 b6 7)
   { name: "Hungarian Minor", group: "Additional Heptatonic Scales", degrees: [0, 2, 3, 6, 7, 8, 11] },
   // Enigmatic — (1 b2 3 #4 #5 #6 7)
   { name: "Enigmatic", group: "Additional Heptatonic Scales", degrees: [0, 1, 4, 6, 8, 10, 11] },
