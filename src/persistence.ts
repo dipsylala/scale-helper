@@ -17,6 +17,7 @@ interface StoredState {
   fretCount: number;
   labelMode: LabelMode;
   handedness: "right" | "left";
+  scaleRunBpm: number;
 }
 
 export function saveState(state: AppState): void {
@@ -27,6 +28,7 @@ export function saveState(state: AppState): void {
     fretCount: state.fretCount,
     labelMode: state.labelMode,
     handedness: state.handedness,
+    scaleRunBpm: state.scaleRunBpm,
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
 }
@@ -55,7 +57,12 @@ export function loadState(defaults: AppState): AppState {
 
     const handedness: "right" | "left" = stored.handedness === "left" ? "left" : "right";
 
-    return { tuning, scale, root, fretCount, labelMode, handedness };
+    const scaleRunBpm =
+      typeof stored.scaleRunBpm === "number" && stored.scaleRunBpm >= 40 && stored.scaleRunBpm <= 300
+        ? stored.scaleRunBpm
+        : defaults.scaleRunBpm;
+
+    return { tuning, scale, root, fretCount, labelMode, handedness, scaleRunBpm };
   } catch {
     return { ...defaults };
   }

@@ -86,7 +86,7 @@ header {
 
 header h1 {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--accent);
   white-space: nowrap;
   letter-spacing: 0.04em;
@@ -193,7 +193,6 @@ fieldset.selector-group > legend {
 .root-row button.active {
   background: var(--accent);
   color: #fff;
-  font-weight: 700;
   border-color: var(--accent);
 }
 
@@ -202,6 +201,73 @@ fieldset.selector-group > legend {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* Legend row: "Scale" label + play buttons side-by-side */
+legend.scale-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.scale-play-row {
+  display: flex;
+  gap: 4px;
+}
+
+.scale-play-btn {
+  background: var(--control-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: normal;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.scale-play-btn:hover {
+  background: var(--control-hover);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.scale-play-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.scale-bpm-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-left: 4px;
+}
+
+.scale-bpm-input {
+  background: var(--control-bg);
+  color: var(--text);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.82rem;
+  width: 56px;
+  text-align: center;
+  outline: none;
+}
+
+.scale-bpm-input:focus {
+  border-color: var(--accent);
 }
 
 .scale-grid {
@@ -241,14 +307,13 @@ fieldset.selector-group > legend {
 .scale-grid button.active {
   background: var(--accent);
   color: #fff;
-  font-weight: 600;
   border-color: var(--accent);
 }
 
 .scale-group-heading {
   grid-column: 1 / -1;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
@@ -295,7 +360,6 @@ fieldset.selector-group > legend {
 .btn-group button.active {
   background: var(--accent);
   color: #fff;
-  font-weight: 600;
   border-color: var(--accent);
 }
 
@@ -337,7 +401,6 @@ fieldset.selector-group > legend {
 .label-toggle button.active {
   background: var(--accent);
   color: #fff;
-  font-weight: 600;
 }
 
 /* ── Export buttons ──────────────────────────────────────────────────────── */
@@ -353,7 +416,7 @@ fieldset.selector-group > legend {
   border-radius: 4px;
   color: var(--text-muted);
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.04em;
   padding: 4px 8px;
   cursor: pointer;

@@ -9,6 +9,7 @@ import { AVAILABLE_STRING_COUNTS, getTuningsForStringCount } from "./tunings";
 import { SCALES, Scale } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
 import { AppState } from "./state";
+import { playScaleRun } from "./audio";
 
 // ── Top bar: settings that don't change often ─────────────────────────────────
 export function mountSettings(
@@ -131,7 +132,47 @@ export function mountSelectors(
   const scaleSection = document.createElement("fieldset");
   scaleSection.className = "selector-group scale-section";
   const scaleLegend = document.createElement("legend");
-  scaleLegend.textContent = "Scale";
+  scaleLegend.className = "scale-legend";
+  const scaleLegendText = document.createElement("span");
+  scaleLegendText.textContent = "Scale";
+  scaleLegend.appendChild(scaleLegendText);
+
+  const scalePlayRow = document.createElement("div");
+  scalePlayRow.className = "scale-play-row";
+
+  const playUpBtn = document.createElement("button");
+  playUpBtn.className = "scale-play-btn";
+  playUpBtn.textContent = "▶ Up";
+  playUpBtn.setAttribute("aria-label", "Play 4-octave scale run ascending");
+  playUpBtn.addEventListener("click", () => playScaleRun(state.root, state.scale, state.tuning, "up", state.scaleRunBpm));
+
+  const playUpDownBtn = document.createElement("button");
+  playUpDownBtn.className = "scale-play-btn";
+  playUpDownBtn.textContent = "▶ Up & Down";
+  playUpDownBtn.setAttribute("aria-label", "Play 4-octave scale run ascending then descending");
+  playUpDownBtn.addEventListener("click", () => playScaleRun(state.root, state.scale, state.tuning, "upDown", state.scaleRunBpm));
+
+  const bpmLabel = document.createElement("label");
+  bpmLabel.className = "scale-bpm-label";
+  bpmLabel.textContent = "BPM";
+
+  const bpmInput = document.createElement("input");
+  bpmInput.type = "number";
+  bpmInput.min = "40";
+  bpmInput.max = "300";
+  bpmInput.value = String(state.scaleRunBpm);
+  bpmInput.className = "scale-bpm-input";
+  bpmInput.addEventListener("change", () => {
+    const bpm = Math.min(300, Math.max(40, Number(bpmInput.value) || 120));
+    bpmInput.value = String(bpm);
+    onChange({ ...state, scaleRunBpm: bpm });
+  });
+  bpmLabel.appendChild(bpmInput);
+
+  scalePlayRow.appendChild(playUpBtn);
+  scalePlayRow.appendChild(playUpDownBtn);
+  scalePlayRow.appendChild(bpmLabel);
+  scaleLegend.appendChild(scalePlayRow);
   scaleSection.appendChild(scaleLegend);
 
   const groups = new Map<string, Scale[]>();

@@ -15,4 +15,5 @@ export interface AppState {
   fretCount: number;
   labelMode: LabelMode;
   handedness: "right" | "left";
+  scaleRunBpm: number;
 }

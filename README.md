@@ -10,6 +10,11 @@ Pick a tuning, a scale, and a root note — the fretboard updates instantly to s
 
 All selections are remembered between sessions via `localStorage`. The URL also changes so if you want to share a particular set of settings, or bookmark them you can.
 
+You can also export the diagrams if you prefer a hardcopy.
+
+![image](images/harmonic-minor-g-standard-e-a-d-g-b-e.png)
+
+
 ## Controls
 
 | Control | Description |

@@ -10,6 +10,7 @@
 //   f = fret count      (12–24)
 //   l = label mode      (dots | noteNames | degrees)
 //   h = handedness      (right | left)
+//   b = scale run BPM   (40–300)
 // ---------------------------------------------------------------------------
 
 import { AppState, LabelMode } from "./state";
@@ -17,7 +18,7 @@ import { NOTE_NAMES } from "./fretboard";
 import { SCALES } from "./scales";
 import { TUNINGS } from "./tunings";
 
-const URL_KEYS = ["r", "s", "t", "f", "l", "h"] as const;
+const URL_KEYS = ["r", "s", "t", "f", "l", "h", "b"] as const;
 
 /** Returns true if the URL search string contains any of the 6 state keys. */
 export function hasURLParams(): boolean {
@@ -34,6 +35,7 @@ export function stateToParams(state: AppState): URLSearchParams {
   p.set("f", String(state.fretCount));
   p.set("l", state.labelMode);
   p.set("h", state.handedness);
+  p.set("b", String(state.scaleRunBpm));
   return p;
 }
 
@@ -74,7 +76,14 @@ export function paramsToState(
   const handedness =
     handRaw === "right" || handRaw === "left" ? handRaw : defaults.handedness;
 
-  return { root, scale, tuning, fretCount, labelMode, handedness };
+  // scaleRunBpm
+  const bpmRaw = parseInt(params.get("b") ?? "", 10);
+  const scaleRunBpm =
+    Number.isInteger(bpmRaw) && bpmRaw >= 40 && bpmRaw <= 300
+      ? bpmRaw
+      : defaults.scaleRunBpm;
+
+  return { root, scale, tuning, fretCount, labelMode, handedness, scaleRunBpm };
 }
 
 /** Push the current state into the URL without adding a browser history entry. */

@@ -394,6 +394,7 @@ export function exportNeck(
   container: HTMLElement,
   format: "svg" | "png",
   filename: string,
+  title: string,
 ): void {
   const srcSvg = container.querySelector("svg");
   if (!srcSvg) return;
@@ -414,12 +415,45 @@ export function exportNeck(
     }
   }
 
-  // Prepend a background rect so the export has an opaque background.
+  // Expand the viewBox upward to fit a title bar.
+  const TITLE_HEIGHT = 28;
   const bgColor = rootStyle.getPropertyValue("--bg").trim() || "#1a1a2e";
+  const textColor = rootStyle.getPropertyValue("--text").trim() || "#e0e0e0";
+  const accentColor = rootStyle.getPropertyValue("--accent").trim() || "#e67e22";
   const { x: vbX, y: vbY, width: vbW, height: vbH } = clone.viewBox.baseVal;
+  const newVbY = vbY - TITLE_HEIGHT;
+  const newVbH = vbH + TITLE_HEIGHT;
+  clone.setAttribute("viewBox", `${vbX} ${newVbY} ${vbW} ${newVbH}`);
+  clone.setAttribute("height", String(Number(clone.getAttribute("height") || vbH) + TITLE_HEIGHT));
+
+  // Background rect covering the expanded area.
   const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  attr(bgRect, { x: vbX, y: vbY, width: vbW, height: vbH, fill: bgColor });
+  attr(bgRect, { x: vbX, y: newVbY, width: vbW, height: newVbH, fill: bgColor });
   clone.insertBefore(bgRect, clone.firstChild);
+
+  // Title text centred in the title bar.
+  const titleEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  attr(titleEl, {
+    x: vbX + vbW / 2,
+    y: newVbY + TITLE_HEIGHT / 2 + 5,
+    "text-anchor": "middle",
+    "font-size": 13,
+    "font-family": "system-ui, sans-serif",
+    fill: textColor,
+  });
+  // Render root+scale in accent colour, tuning in muted colour
+  const [rootScale, ...tuningParts] = title.split(" — ");
+  const tspan1 = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+  tspan1.setAttribute("font-weight", "600");
+  tspan1.setAttribute("fill", accentColor);
+  tspan1.textContent = rootScale;
+  titleEl.appendChild(tspan1);
+  if (tuningParts.length) {
+    const tspan2 = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    tspan2.textContent = ` — ${tuningParts.join(" — ")}`;
+    titleEl.appendChild(tspan2);
+  }
+  clone.insertBefore(titleEl, clone.childNodes[1]);
 
   const svgStr = new XMLSerializer().serializeToString(clone);
   const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });

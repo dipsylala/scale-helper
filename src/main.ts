@@ -19,6 +19,7 @@ const DEFAULT_STATE: AppState = {
   fretCount: 21,
   labelMode: "dots",
   handedness: "right",
+  scaleRunBpm: 120,
 };
 
 const settingsEl = document.getElementById("settings")!;
@@ -68,8 +69,12 @@ function exportFilename(): string {
     .replace(/^-|-$/g, "");
 }
 
-exportSvgBtn.addEventListener("click", () => exportNeck(neckEl, "svg", exportFilename()));
-exportPngBtn.addEventListener("click", () => exportNeck(neckEl, "png", exportFilename()));
+function exportTitle(): string {
+  return `${NOTE_NAMES[state.root]} ${state.scale.name} — ${state.tuning.name}`;
+}
+
+exportSvgBtn.addEventListener("click", () => exportNeck(neckEl, "svg", exportFilename(), exportTitle()));
+exportPngBtn.addEventListener("click", () => exportNeck(neckEl, "png", exportFilename(), exportTitle()));
 
 // Boot — state was just loaded from storage, no need to write it back
 mountNeckListener(neckEl);
