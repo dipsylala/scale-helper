@@ -3,14 +3,14 @@
 // Wires controls → fretboard model → renderer.
 // ---------------------------------------------------------------------------
 
-import { mountSettings, mountSelectors, ScaleMemory } from "./controls";
+import { mountSettings, mountSelectors } from "./controls";
 import { AppState } from "./state";
 import { buildFretboard, NOTE_NAMES } from "./fretboard";
 import { renderNeck, exportNeck, mountNeckListener } from "./renderer";
 import { saveState, loadState, saveTheme, loadTheme } from "./persistence";
 import { hasURLParams, paramsToState, syncURLToState } from "./url";
 import { TUNINGS } from "./tunings";
-import { SCALES, Scale } from "./scales";
+import { SCALES } from "./scales";
 
 const DEFAULT_STATE: AppState = {
   tuning: TUNINGS[0],
@@ -20,18 +20,6 @@ const DEFAULT_STATE: AppState = {
   labelMode: "dots",
   handedness: "right",
 };
-
-function createScaleMemory(): ScaleMemory {
-  const last: Partial<Record<"common" | "exotic", Scale>> = {};
-  return {
-    remember(scale: Scale) {
-      last[scale.category] = scale;
-    },
-    recall(category: "common" | "exotic") {
-      return last[category];
-    },
-  };
-}
 
 const settingsEl = document.getElementById("settings")!;
 const selectorsEl = document.getElementById("selectors")!;
@@ -60,7 +48,6 @@ themeBtn.addEventListener("click", () => {
 let state: AppState = hasURLParams()
   ? paramsToState(new URLSearchParams(window.location.search), DEFAULT_STATE)
   : loadState(DEFAULT_STATE);
-const scaleMemory = createScaleMemory();
 
 function render(s: AppState, save = true): void {
   state = s;
@@ -69,7 +56,7 @@ function render(s: AppState, save = true): void {
   const grid = buildFretboard(state.tuning, state.scale, state.root, state.fretCount);
   renderNeck(neckEl, grid, state.labelMode, state.fretCount, state.handedness === "left");
   mountSettings(settingsEl, state, render);
-  mountSelectors(selectorsEl, state, render, scaleMemory);
+  mountSelectors(selectorsEl, state, render);
 }
 
 // ── Export ───────────────────────────────────────────────────────────────────

@@ -4,9 +4,8 @@ import { SCALES, getScaleNotes, getDegreeLabel } from "./scales";
 // ── SCALES registry ───────────────────────────────────────────────────────────
 
 describe("SCALES registry", () => {
-  it("contains at least one common and one exotic scale", () => {
-    expect(SCALES.some((s) => s.category === "common")).toBe(true);
-    expect(SCALES.some((s) => s.category === "exotic")).toBe(true);
+  it("every scale belongs to a named group", () => {
+    expect(SCALES.every((s) => typeof s.group === "string" && s.group.length > 0)).toBe(true);
   });
 
   it("every scale starts with degree 0 (root)", () => {
@@ -26,10 +25,10 @@ describe("SCALES registry", () => {
     }
   });
 
-  it("every scale has a non-empty name and a valid category", () => {
+  it("every scale has a non-empty name and a non-empty group", () => {
     for (const scale of SCALES) {
       expect(scale.name.length).toBeGreaterThan(0);
-      expect(["common", "exotic"]).toContain(scale.category);
+      expect(scale.group.length).toBeGreaterThan(0);
     }
   });
 

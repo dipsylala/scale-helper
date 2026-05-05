@@ -10,11 +10,6 @@ import { SCALES, Scale } from "./scales";
 import { NOTE_NAMES } from "./fretboard";
 import { AppState } from "./state";
 
-export interface ScaleMemory {
-  remember(scale: Scale): void;
-  recall(category: "common" | "exotic"): Scale | undefined;
-}
-
 // ── Top bar: settings that don't change often ─────────────────────────────────
 export function mountSettings(
   container: HTMLElement,
@@ -89,9 +84,22 @@ export function mountSelectors(
   container: HTMLElement,
   state: AppState,
   onChange: (s: AppState) => void,
-  scaleMemory: ScaleMemory,
 ): void {
   container.innerHTML = "";
+
+  // ── Tuning ────────────────────────────────────────────────────────────────
+  const filteredTunings = getTuningsForStringCount(state.tuning.strings.length);
+  container.appendChild(
+    makeButtonGroup(
+      filteredTunings.map((t) => t.name),
+      state.tuning.name,
+      (name) => {
+        const t = filteredTunings.find((tu) => tu.name === name)!;
+        onChange({ ...state, tuning: t });
+      },
+      "Tuning",
+    ),
+  );
 
   // ── Root (full-width equal-width buttons) ─────────────────────────────────
   const rootFieldset = document.createElement("fieldset");
@@ -119,63 +127,43 @@ export function mountSelectors(
   rootFieldset.appendChild(rootRow);
   container.appendChild(rootFieldset);
 
-  // ── Scale (grid + Common/Exotic filter) ───────────────────────────────────
-  const isExotic = state.scale.category === "exotic";
-  const visibleScales = SCALES.filter((s) => s.category === (isExotic ? "exotic" : "common"));
-  scaleMemory.remember(state.scale);
-
+  // ── Scale (grouped grid) ──────────────────────────────────────────────────
   const scaleSection = document.createElement("fieldset");
   scaleSection.className = "selector-group scale-section";
   const scaleLegend = document.createElement("legend");
   scaleLegend.textContent = "Scale";
   scaleSection.appendChild(scaleLegend);
 
+  const groups = new Map<string, Scale[]>();
+  for (const s of SCALES) {
+    if (!groups.has(s.group)) groups.set(s.group, []);
+    groups.get(s.group)!.push(s);
+  }
+
   const scaleGrid = document.createElement("div");
   scaleGrid.className = "scale-grid";
-  for (const s of visibleScales) {
-    const btn = document.createElement("button");
-    btn.textContent = s.name;
-    btn.setAttribute("aria-label", `${s.name} scale`);
-    if (state.scale.name === s.name) {
-      btn.classList.add("active");
-      btn.setAttribute("aria-pressed", "true");
-    } else {
-      btn.setAttribute("aria-pressed", "false");
+  for (const [groupName, groupScales] of groups) {
+    const heading = document.createElement("span");
+    heading.className = "scale-group-heading";
+    heading.textContent = groupName;
+    scaleGrid.appendChild(heading);
+    for (const s of groupScales) {
+      const btn = document.createElement("button");
+      btn.textContent = s.name;
+      btn.title = s.name;
+      btn.setAttribute("aria-label", `${s.name} scale`);
+      if (state.scale.name === s.name) {
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+      } else {
+        btn.setAttribute("aria-pressed", "false");
+      }
+      btn.addEventListener("click", () => onChange({ ...state, scale: s }));
+      scaleGrid.appendChild(btn);
     }
-    btn.addEventListener("click", () => onChange({ ...state, scale: s }));
-    scaleGrid.appendChild(btn);
   }
   scaleSection.appendChild(scaleGrid);
-
-  const filterToggle = makeToggleGroup(
-    [
-      { value: "common", text: "Common" },
-      { value: "exotic", text: "Exotic" },
-    ],
-    isExotic ? "exotic" : "common",
-    (v) => {
-      const fallback = SCALES.find((s) => s.category === v)!;
-      onChange({ ...state, scale: scaleMemory.recall(v) ?? fallback });
-    },
-    "Scale category filter",
-  );
-  filterToggle.classList.add("scale-filter");
-  scaleSection.appendChild(filterToggle);
   container.appendChild(scaleSection);
-
-  // ── Tuning ────────────────────────────────────────────────────────────────
-  const filteredTunings = getTuningsForStringCount(state.tuning.strings.length);
-  container.appendChild(
-    makeButtonGroup(
-      filteredTunings.map((t) => t.name),
-      state.tuning.name,
-      (name) => {
-        const t = filteredTunings.find((tu) => tu.name === name)!;
-        onChange({ ...state, tuning: t });
-      },
-      "Tuning",
-    ),
-  );
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

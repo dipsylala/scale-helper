@@ -197,7 +197,7 @@ fieldset.selector-group > legend {
   border-color: var(--accent);
 }
 
-/* ── Scale section: grid + filter toggle ────────────────────────────────── */
+/* ── Scale section: grouped grid ─────────────────────────────────────────── */
 .scale-section {
   display: flex;
   flex-direction: column;
@@ -245,8 +245,19 @@ fieldset.selector-group > legend {
   border-color: var(--accent);
 }
 
-.scale-filter {
-  align-self: center;
+.scale-group-heading {
+  grid-column: 1 / -1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 6px 0 2px;
+  border-bottom: 1px solid var(--control-border);
+}
+
+.scale-group-heading:first-child {
+  padding-top: 0;
 }
 
 /* ── Button groups (tuning) ──────────────────────────────────────────────── */
