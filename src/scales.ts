@@ -26,18 +26,18 @@ export const SCALES: readonly Scale[] = [
   { name: "Melodic Minor", group: "Major & Minor", degrees: [0, 2, 3, 5, 7, 9, 11] },
 
   // ── Diatonic Modes ──────────────────────────────────────────────────────────────────
-  { name: "Dorian", group: "Modes", degrees: [0, 2, 3, 5, 7, 9, 10] },
-  { name: "Phrygian", group: "Modes", degrees: [0, 1, 3, 5, 7, 8, 10] },
-  { name: "Lydian", group: "Modes", degrees: [0, 2, 4, 6, 7, 9, 11] },
-  { name: "Mixolydian", group: "Modes", degrees: [0, 2, 4, 5, 7, 9, 10] },
-  { name: "Locrian", group: "Modes", degrees: [0, 1, 3, 5, 6, 8, 10] },
+  { name: "Dorian", group: "Diatonic Modes", degrees: [0, 2, 3, 5, 7, 9, 10] },
+  { name: "Phrygian", group: "Diatonic Modes", degrees: [0, 1, 3, 5, 7, 8, 10] },
+  { name: "Lydian", group: "Diatonic Modes", degrees: [0, 2, 4, 6, 7, 9, 11] },
+  { name: "Mixolydian", group: "Diatonic Modes", degrees: [0, 2, 4, 5, 7, 9, 10] },
+  { name: "Locrian", group: "Diatonic Modes", degrees: [0, 1, 3, 5, 6, 8, 10] },
 
   // ── Harmonic & Melodic Minor Modes ─────────────────────────────────────────
   // Phrygian Dominant — mode 5 of Harmonic Minor (1 b2 3 4 5 b6 b7)
   { name: "Phrygian Dominant", group: "Harmonic & Melodic Minor Modes", degrees: [0, 1, 4, 5, 7, 8, 10] },
   // Lydian Dominant — mode 4 of Melodic Minor (1 2 3 #4 5 6 b7)
   { name: "Lydian Dominant", group: "Harmonic & Melodic Minor Modes", degrees: [0, 2, 4, 6, 7, 9, 10] },
-  // Super Locrian (Altered) — mode 7 of Melodic Minor (1 b2 b3 b4 b5 b6 b7)
+  // Super Locrian (Altered) — mode 7 of Melodic Minor (1 b9 #9 3 b5 #5 b7)
   { name: "Super Locrian (Altered)", group: "Harmonic & Melodic Minor Modes", degrees: [0, 1, 3, 4, 6, 8, 10] },
 
   // ── Symmetric ─────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ export const SCALES: readonly Scale[] = [
   // Diminished Whole-Half — 8-note symmetrical (W H W H W H W H)
   { name: "Diminished (Whole-Half)", group: "Symmetric", degrees: [0, 2, 3, 5, 6, 8, 9, 11] },
 
-  // ── Additional Heptatonic Scales───────────────────────────────────────────────────
+  // ── Additional Heptatonic Scales ───────────────────────────────────────────────────
   // Double Harmonic Major (Byzantine) — (1 b2 3 4 5 b6 7)
   { name: "Double Harmonic Major", group: "Additional Heptatonic Scales", degrees: [0, 1, 4, 5, 7, 8, 11] },
   // Hungarian Minor — (1 2 b3 #4 5 b6 7)
