@@ -50,11 +50,11 @@ export const SCALES: readonly Scale[] = [
 
   // ── World ──────────────────────────────────────────────────────────────────
   // Double Harmonic Major (Byzantine) — (1 b2 3 4 5 b6 7)
-  { name: "Double Harmonic Major", group: "World", degrees: [0, 1, 4, 5, 7, 8, 11] },
+  { name: "Double Harmonic Major", group: "Additional Heptatonic Scales", degrees: [0, 1, 4, 5, 7, 8, 11] },
   // Hungarian Minor (Gypsy Minor) — (1 2 b3 #4 5 b6 7)
-  { name: "Hungarian Minor", group: "World", degrees: [0, 2, 3, 6, 7, 8, 11] },
+  { name: "Hungarian Minor", group: "Additional Heptatonic Scales", degrees: [0, 2, 3, 6, 7, 8, 11] },
   // Enigmatic — (1 b2 3 #4 #5 #6 7)
-  { name: "Enigmatic", group: "World", degrees: [0, 1, 4, 6, 8, 10, 11] },
+  { name: "Enigmatic", group: "Additional Heptatonic Scales", degrees: [0, 1, 4, 6, 8, 10, 11] },
 ];
 
 /**
